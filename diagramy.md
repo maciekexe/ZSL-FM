@@ -1,7 +1,5 @@
 # 📊 Diagramy — Łączność FM
 
-Diagramy w formacie Mermaid — renderują się automatycznie w podglądzie plików `.md` na GitHubie.
-
 ---
 
 ## 1. Diagram klas
@@ -164,4 +162,4 @@ flowchart TD
 
 ---
 
-*Diagramy można edytować bezpośrednio w blokach ```mermaid``` — każdy edytor obsługujący Mermaid (w tym podgląd GitHuba) wyrenderuje je automatycznie.*
+
