@@ -101,3 +101,7 @@ Projekt rozwijany przez zespół. Zasady współpracy:
 
 Masz pytania lub sugestie? Otwórz Issue w repozytorium.
 
+
+
+<!--https://claude.ai/share/035e0748-9a61-49ca-9689-3c00e7be262f-->
+
