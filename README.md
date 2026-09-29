@@ -102,8 +102,8 @@ Projekt rozwijany jest zespołowo. Aby utrzymać czystą architekturę i unikną
 Kluczowe założenia logiki biznesowej, diagramy klas UML oraz przepływy aktywności (np. symulacja meczu, transfery) znajdują się w folderze `Docs/`. 
 
 * [Diagram Klas](Docs/DiagramKlas.png)
-* [Diagram Aktywności - Symulacja Meczu](Docs/DiagramAktywnosci1.png)
-* [Diagram Aktywności - Transfery](Docs/DiagramAktywnosci2.png)
+* [Diagram Aktywności - Symulacja Meczu](Docs/DiagramAktywnościci1.png)
+* [Diagram Aktywności - Transfery](Docs/DiagramAktywnośći2.png)
 
 
 
