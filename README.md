@@ -97,9 +97,6 @@ Projekt rozwijany przez zespół. Zasady współpracy:
 
 \---
 
-## 📬 Kontakt
-
-Masz pytania lub sugestie? Otwórz Issue w repozytorium.
 
 
 
