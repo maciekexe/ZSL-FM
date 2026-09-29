@@ -63,8 +63,8 @@ LacznoscFM/
 1. Sklonuj repozytorium:
 
 ```bash
-   git clone https://github.com/twoja-organizacja/lacznosc-fm.git
-   cd lacznosc-fm
+   git clone https://github.com/maciekexe/ZSL-FM.git
+   cd ZSL-FM
    ```
 
 2. Otwórz projekt w Unity Hub, wskazując folder repozytorium.
@@ -86,19 +86,25 @@ LacznoscFM/
 
 \---
 
-## 🤝 Współpraca
+## 🤝 Zasady współpracy 
 
-Projekt rozwijany przez zespół. Zasady współpracy:
+Projekt rozwijany jest zespołowo. Aby utrzymać czystą architekturę i uniknąć długu technologicznego, każdego kontrybutora obowiązują bezwzględnie poniższe reguły:
 
-1. Twórz nową gałąź (`feature/nazwa-funkcji`) dla każdej funkcjonalności.
-2. Commituj małymi, czytelnymi zmianami.
-3. Otwieraj Pull Request i poproś o code review przed merge do `main`.
-4. Logikę symulacji (folder `Scripts/Core`) trzymaj niezależną od Unity — powinna dać się testować bez otwierania edytora.
-
+1. **Ścisła Separacja Logiki (Core):** Kod w folderze `Scripts/Core/` to czyste środowisko C#. **Kategorycznie zabrania się** importowania i używania przestrzeni nazw `UnityEngine` w tej warstwie. Silnik meczowy ma być całkowicie niezależny, testowalny poza edytorem i opierać się wyłącznie na standardowych bibliotekach .NET.
+2. **Architektura obiektów:** Modele domenowe zdefiniowane w warstwie Core (np. Manager, Player, Club) to czyste klasy (POCO) i **nie mogą** pod żadnym pozorem dziedziczyć po `MonoBehaviour`.
+3. **Pasywna Warstwa Widoku:** Skrypty w folderze `Scripts/UI/` odpowiadają wyłącznie za wyświetlanie danych. Dziedziczą po `MonoBehaviour`, ale nie przeliczają logiki biznesowej — ich jedynym zadaniem jest subskrybowanie zdarzeń (Events/Delegates) płynących z warstwy `Core`.
+4. Twórz nową gałąź (`feature/nazwa-funkcji`) dla każdej nowej funkcjonalności przed rozpoczęciem pracy.
+5. Commituj małymi, czytelnymi paczkami i zawsze korzystaj z Pull Requestów przed wykonaniem merge'a do gałęzi `main`.
 \---
 
+## 📐 Architektura i Dokumentacja
+
+Kluczowe założenia logiki biznesowej, diagramy klas UML oraz przepływy aktywności (np. symulacja meczu, transfery) znajdują się w folderze `Docs/`. 
+
+* [Diagram Klas](Docs/DiagramKlas.png)
+* [Diagram Aktywności - Symulacja Meczu](Docs/DiagramAktywnosci1.png)
+* [Diagram Aktywności - Transfery](Docs/DiagramAktywnosci2.png)
 
 
 
-<!--https://claude.ai/share/035e0748-9a61-49ca-9689-3c00e7be262f-->
 
