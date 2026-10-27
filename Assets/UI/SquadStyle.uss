@@ -1,8 +1,13 @@
 /* ==========================================================================
-   ŁĄCZNOŚĆ FM - SQUAD VIEW STYLE (USS)
+   ŁĄCZNOŚĆ FM - SQUAD & TRANSFER MARKET VIEW STYLE (USS)
    Ciemny motyw Football Managera (grafitowe tło, zielone akcenty, zaokrąglone karty)
    Odpowiednik Tailwind CSS w silniku Unity UI Toolkit
    ========================================================================== */
+
+/* Klasa narzędziowa ukrywająca elementy (odpowiednik Tailwind .hidden / display: none) */
+.hidden {
+    display: none;
+}
 
 /* Główny kontener widoku */
 .root-container {
@@ -145,7 +150,7 @@
 }
 
 .content-header {
-    margin-bottom: 18px;
+    margin-bottom: 16px;
 }
 
 .section-title {
@@ -158,6 +163,54 @@
     font-size: 12px;
     color: #64748b;
     margin-top: 3px;
+}
+
+/* Kontenery poszczególnych zakładek */
+.tab-container {
+    flex-grow: 1;
+}
+
+/* ---------------- PASEK FILTRÓW (FILTER BAR) ---------------- */
+.filter-bar {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.filter-label {
+    font-size: 11px;
+    -unity-font-style: bold;
+    color: #64748b;
+    margin-right: 12px;
+    letter-spacing: 0.5px;
+}
+
+.filter-btn {
+    height: 30px;
+    padding-left: 14px;
+    padding-right: 14px;
+    margin-right: 8px;
+    background-color: #1a202c;
+    border-width: 1px;
+    border-color: #2d3748;
+    border-radius: 15px;
+    color: #94a3b8;
+    font-size: 12px;
+    -unity-font-style: bold;
+    transition-property: background-color, border-color, color;
+    transition-duration: 0.15s;
+}
+
+.filter-btn:hover {
+    background-color: #283347;
+    color: #ffffff;
+    border-color: #4a5568;
+}
+
+.filter-btn--active {
+    background-color: #064e3b;
+    border-color: #10b981;
+    color: #34d399;
 }
 
 /* ---------------- NAGŁÓWKI TABELI ---------------- */
@@ -180,6 +233,7 @@
     letter-spacing: 0.5px;
 }
 
+/* Kolumny tabeli Kadry */
 .col-pos {
     width: 60px;
 }
@@ -193,12 +247,40 @@
     -unity-text-align: middle-center;
 }
 
+/* Kolumny tabeli Rynku Transferowego */
+.col-market-pos {
+    width: 50px;
+}
+
+.col-market-name {
+    flex-grow: 1;
+}
+
+.col-market-club {
+    width: 140px;
+}
+
+.col-market-skill {
+    width: 70px;
+    -unity-text-align: middle-center;
+}
+
+.col-market-price {
+    width: 130px;
+    -unity-text-align: middle-right;
+}
+
+.col-market-action {
+    width: 120px;
+    -unity-text-align: middle-center;
+}
+
 /* ---------------- KONTENER LISTY ZAWODNIKÓW (SCROLLVIEW) ---------------- */
 .players-container {
     flex-grow: 1;
 }
 
-/* ---------------- WIERSZ / KARTA ZAWODNIKA ---------------- */
+/* ---------------- WIERSZ / KARTA ZAWODNIKA (KADRA) ---------------- */
 .player-row {
     flex-direction: row;
     align-items: center;
@@ -262,4 +344,62 @@
 .skill-low {
     background-color: #475569;
     color: #e2e8f0;
+}
+
+/* ---------------- WIERSZ RYNKU TRANSFEROWEGO ---------------- */
+.market-row {
+    flex-direction: row;
+    align-items: center;
+    background-color: #161a23;
+    border-radius: 8px;
+    border-width: 1px;
+    border-color: #222938;
+    margin-bottom: 6px;
+    padding-left: 16px;
+    padding-right: 16px;
+    height: 52px;
+    transition-property: background-color, border-color;
+    transition-duration: 0.15s;
+}
+
+.market-row:hover {
+    background-color: #1c2230;
+    border-color: #333d52;
+}
+
+.club-pill {
+    width: 140px;
+    font-size: 12px;
+    color: #94a3b8;
+    -unity-font-style: bold;
+}
+
+.price-tag {
+    width: 130px;
+    font-size: 13px;
+    -unity-font-style: bold;
+    color: #fbbf24;
+    -unity-text-align: middle-right;
+    margin-right: 12px;
+}
+
+.btn-bid {
+    width: 110px;
+    height: 32px;
+    background-color: #10b981;
+    color: #ffffff;
+    border-width: 0;
+    border-radius: 6px;
+    font-size: 12px;
+    -unity-font-style: bold;
+    transition-property: background-color;
+    transition-duration: 0.15s;
+}
+
+.btn-bid:hover {
+    background-color: #059669;
+}
+
+.btn-bid:active {
+    background-color: #047857;
 }
