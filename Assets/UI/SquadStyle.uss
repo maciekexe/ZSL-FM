@@ -1,0 +1,265 @@
+/* ==========================================================================
+   ŁĄCZNOŚĆ FM - SQUAD VIEW STYLE (USS)
+   Ciemny motyw Football Managera (grafitowe tło, zielone akcenty, zaokrąglone karty)
+   Odpowiednik Tailwind CSS w silniku Unity UI Toolkit
+   ========================================================================== */
+
+/* Główny kontener widoku */
+.root-container {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    background-color: #0f1218;
+    color: #e2e8f0;
+    font-size: 14px;
+}
+
+/* ---------------- GÓRNY PASEK (HEADER BAR) ---------------- */
+.header-bar {
+    height: 70px;
+    background-color: #161b26;
+    border-bottom-width: 1px;
+    border-bottom-color: #262e3d;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.club-brand {
+    flex-direction: column;
+    justify-content: center;
+}
+
+.club-title {
+    font-size: 22px;
+    -unity-font-style: bold;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+}
+
+.club-subtitle {
+    font-size: 11px;
+    color: #10b981;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+}
+
+.header-stats {
+    flex-direction: row;
+    align-items: center;
+}
+
+.stat-card {
+    background-color: #1d2332;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-left: 14px;
+    padding-right: 14px;
+    border-radius: 6px;
+    border-width: 1px;
+    border-color: #2b3548;
+    margin-left: 12px;
+    min-width: 110px;
+}
+
+.stat-label {
+    font-size: 10px;
+    color: #8896ab;
+    -unity-font-style: bold;
+    margin-bottom: 2px;
+}
+
+.stat-value {
+    font-size: 15px;
+    -unity-font-style: bold;
+    color: #f1f5f9;
+}
+
+.text-accent {
+    color: #10b981;
+}
+
+/* ---------------- UKŁAD GŁÓWNY (MAIN CONTAINER) ---------------- */
+.main-container {
+    flex-grow: 1;
+    flex-direction: row;
+}
+
+/* ---------------- PANEL BOCZNY (SIDEBAR) ---------------- */
+.sidebar {
+    width: 220px;
+    background-color: #131720;
+    border-right-width: 1px;
+    border-right-color: #262e3d;
+    padding-top: 20px;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.sidebar-heading {
+    font-size: 11px;
+    -unity-font-style: bold;
+    color: #64748b;
+    margin-bottom: 12px;
+    margin-left: 8px;
+    letter-spacing: 1px;
+}
+
+.nav-button {
+    height: 42px;
+    margin-bottom: 8px;
+    background-color: transparent;
+    border-width: 0;
+    border-radius: 8px;
+    color: #94a3b8;
+    font-size: 14px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+    padding-left: 14px;
+    transition-property: background-color, color;
+    transition-duration: 0.15s;
+}
+
+.nav-button:hover {
+    background-color: #1f2736;
+    color: #f8fafc;
+}
+
+.nav-button--active {
+    background-color: #1a2736;
+    color: #10b981;
+    border-left-width: 4px;
+    border-left-color: #10b981;
+}
+
+/* ---------------- GŁÓWNY OBSZAR ROBOCZY (CONTENT AREA) ---------------- */
+.content-area {
+    flex-grow: 1;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 28px;
+    padding-right: 28px;
+    background-color: #0f1218;
+}
+
+.content-header {
+    margin-bottom: 18px;
+}
+
+.section-title {
+    font-size: 24px;
+    -unity-font-style: bold;
+    color: #ffffff;
+}
+
+.section-subtitle {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 3px;
+}
+
+/* ---------------- NAGŁÓWKI TABELI ---------------- */
+.table-header {
+    flex-direction: row;
+    align-items: center;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #161b24;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.col-header {
+    font-size: 11px;
+    -unity-font-style: bold;
+    color: #64748b;
+    letter-spacing: 0.5px;
+}
+
+.col-pos {
+    width: 60px;
+}
+
+.col-name {
+    flex-grow: 1;
+}
+
+.col-skill {
+    width: 90px;
+    -unity-text-align: middle-center;
+}
+
+/* ---------------- KONTENER LISTY ZAWODNIKÓW (SCROLLVIEW) ---------------- */
+.players-container {
+    flex-grow: 1;
+}
+
+/* ---------------- WIERSZ / KARTA ZAWODNIKA ---------------- */
+.player-row {
+    flex-direction: row;
+    align-items: center;
+    background-color: #161a23;
+    border-radius: 8px;
+    border-width: 1px;
+    border-color: #222938;
+    margin-bottom: 6px;
+    padding-left: 16px;
+    padding-right: 16px;
+    height: 48px;
+    transition-property: background-color, border-color;
+    transition-duration: 0.15s;
+}
+
+.player-row:hover {
+    background-color: #1c2230;
+    border-color: #333d52;
+}
+
+.player-pos-badge {
+    width: 44px;
+    height: 26px;
+    border-radius: 4px;
+    background-color: #232b3c;
+    -unity-text-align: middle-center;
+    font-size: 11px;
+    -unity-font-style: bold;
+    color: #cbd5e1;
+}
+
+.player-name-label {
+    flex-grow: 1;
+    font-size: 14px;
+    -unity-font-style: bold;
+    color: #f1f5f9;
+    margin-left: 16px;
+}
+
+.player-skill-badge {
+    width: 42px;
+    height: 28px;
+    border-radius: 6px;
+    -unity-text-align: middle-center;
+    font-size: 13px;
+    -unity-font-style: bold;
+    color: #ffffff;
+}
+
+/* Kolorowanie wskaźnika OverallSkill */
+.skill-high {
+    background-color: #059669;
+    color: #ffffff;
+}
+
+.skill-mid {
+    background-color: #d97706;
+    color: #ffffff;
+}
+
+.skill-low {
+    background-color: #475569;
+    color: #e2e8f0;
+}

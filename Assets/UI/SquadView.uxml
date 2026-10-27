@@ -1,9 +1,41 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ui:UXML
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ui="UnityEngine.UIElements"
-    xmlns:uie="UnityEditor.UIElements"
-    xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
->
-    
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/SquadStyle.uss?fileID=7433441132597879392&amp;guid=82497091c13f9064b8917d61566b1938&amp;type=3#SquadStyle"/>
+    <ui:VisualElement name="Root" class="root-container">
+        <ui:VisualElement name="HeaderBar" class="header-bar">
+            <ui:VisualElement class="club-brand">
+                <ui:Label text="ZSŁ Gdańsk" class="club-title"/>
+                <ui:Label text="Football Manager • Panel Menedżera" class="club-subtitle"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="header-stats"/>
+            <ui:VisualElement class="stat-card" style="width: 144px;">
+                <ui:Label text="BUDŻET KLUBU" class="stat-label"/>
+                <ui:Label name="ClubBudget" text="150 000 PLN" class="stat-value text-accent"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="stat-card">
+                <ui:Label text="REPUTACJA" class="stat-label"/>
+                <ui:Label name="ClubReputation" text="50" class="stat-value"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="MainContainer" class="main-container">
+            <ui:VisualElement name="Sidebar" class="sidebar">
+                <ui:Label text="MENU GŁÓWNE" class="sidebar-heading"/>
+                <ui:Button name="BtnSquad" text=" Kadra" class="nav-button nav-button--active"/>
+                <ui:Button name="BtnTactics" text=" Taktyka" class="nav-button"/>
+                <ui:Button name="BtnTransfers" text=" Transfery" class="nav-button"/>
+                <ui:Button name="BtnFinances" text=" Finanse" class="nav-button"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="ContentArea" class="content-area">
+                <ui:VisualElement class="content-header">
+                    <ui:Label name="SectionTitle" text="Kadra Zespołu" class="section-title"/>
+                    <ui:Label text="ZSŁ Gdańsk • Pierwszy Skład i Rezerwy" class="section-subtitle"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="table-header">
+                    <ui:Label text="POZ" class="col-header col-pos"/>
+                    <ui:Label text="ZAWODNIK" class="col-header col-name"/>
+                    <ui:Label text="OVERALL" class="col-header col-skill"/>
+                </ui:VisualElement>
+                <ui:ScrollView name="PlayersContainer" class="players-container"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
 </ui:UXML>
