@@ -104,6 +104,7 @@ Kluczowe założenia logiki biznesowej, diagramy klas UML oraz przepływy aktywn
 * [Diagram Klas](Docs/DiagramKlas.png)
 * [Diagram Aktywności - Symulacja Meczu](Docs/DiagramAktywności1.png)
 * [Diagram Aktywności - Transfery](Docs/DiagramAktywności2.png)
+* [PodzialObowiazkow](Docs/PodzialObowiazkow.md)
 
 
 
