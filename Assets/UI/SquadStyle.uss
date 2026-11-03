@@ -153,6 +153,12 @@
     margin-bottom: 16px;
 }
 
+.content-header-top {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .section-title {
     font-size: 24px;
     -unity-font-style: bold;
@@ -163,6 +169,44 @@
     font-size: 12px;
     color: #64748b;
     margin-top: 3px;
+}
+
+/* ---------------- WYSZUKIWARKA (SEARCH FIELD) ---------------- */
+.search-input {
+    width: 280px;
+    height: 38px;
+    border-radius: 19px;
+    background-color: #181f2c;
+    border-width: 1px;
+    border-color: #2b374c;
+    padding-left: 16px;
+    padding-right: 16px;
+    color: #f1f5f9;
+    font-size: 13px;
+    transition-property: border-color, background-color;
+    transition-duration: 0.15s;
+}
+
+.search-input:focus {
+    border-color: #10b981;
+    background-color: #1d2536;
+}
+
+.search-input > #unity-text-input {
+    background-color: transparent;
+    border-width: 0;
+    color: #f8fafc;
+}
+
+/* ---------------- OBSZAR ROBOCZY (TABELA + BOCZNY PROFIL) ---------------- */
+.workspace-body {
+    flex-grow: 1;
+    flex-direction: row;
+}
+
+.workspace-table-area {
+    flex-grow: 1;
+    min-width: 500px;
 }
 
 /* Kontenery poszczególnych zakładek */
@@ -213,7 +257,7 @@
     color: #34d399;
 }
 
-/* ---------------- NAGŁÓWKI TABELI ---------------- */
+/* ---------------- NAGŁÓWKI TABELI I SORTOWANIE ---------------- */
 .table-header {
     flex-direction: row;
     align-items: center;
@@ -231,6 +275,28 @@
     -unity-font-style: bold;
     color: #64748b;
     letter-spacing: 0.5px;
+}
+
+.col-header-btn {
+    background-color: transparent;
+    border-width: 0;
+    color: #64748b;
+    font-size: 11px;
+    -unity-font-style: bold;
+    letter-spacing: 0.5px;
+    padding: 0;
+    margin: 0;
+    -unity-text-align: middle-left;
+    transition-property: color;
+    transition-duration: 0.15s;
+}
+
+.col-header-btn:hover {
+    color: #38bdf8;
+}
+
+.col-header-btn--active {
+    color: #10b981;
 }
 
 /* Kolumny tabeli Kadry */
@@ -258,10 +324,11 @@
 
 .col-market-club {
     width: 140px;
+    -unity-text-align: middle-left;
 }
 
 .col-market-skill {
-    width: 70px;
+    width: 80px;
     -unity-text-align: middle-center;
 }
 
@@ -299,6 +366,13 @@
 .player-row:hover {
     background-color: #1c2230;
     border-color: #333d52;
+}
+
+.player-row--selected {
+    background-color: #1c2536;
+    border-color: #10b981;
+    border-left-width: 4px;
+    border-left-color: #10b981;
 }
 
 .player-pos-badge {
@@ -402,4 +476,169 @@
 
 .btn-bid:active {
     background-color: #047857;
+}
+
+/* ---------------- BOCZNY PANEL PROFILU ZAWODNIKA (DRAWER) ---------------- */
+.player-details-drawer {
+    width: 320px;
+    margin-left: 20px;
+    background-color: #141822;
+    border-width: 1px;
+    border-color: #262f42;
+    border-radius: 10px;
+    padding: 18px;
+    flex-shrink: 0;
+}
+
+.drawer-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom-width: 1px;
+    border-bottom-color: #222b3b;
+}
+
+.drawer-title {
+    font-size: 12px;
+    -unity-font-style: bold;
+    color: #10b981;
+    letter-spacing: 1px;
+}
+
+.drawer-close-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 13px;
+    background-color: #1f2736;
+    color: #94a3b8;
+    border-width: 0;
+    -unity-text-align: middle-center;
+    font-size: 13px;
+    -unity-font-style: bold;
+    padding: 0;
+    transition-property: background-color, color;
+    transition-duration: 0.15s;
+}
+
+.drawer-close-btn:hover {
+    background-color: #ef4444;
+    color: #ffffff;
+}
+
+.drawer-profile-card {
+    background-color: #1a202c;
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 16px;
+    border-width: 1px;
+    border-color: #2a3446;
+}
+
+.drawer-player-main {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.detail-pos-badge {
+    margin-right: 12px;
+}
+
+.drawer-name-group {
+    flex-grow: 1;
+}
+
+.detail-name {
+    font-size: 16px;
+    -unity-font-style: bold;
+    color: #ffffff;
+}
+
+.detail-club {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 2px;
+}
+
+.detail-overall-badge {
+    width: 44px;
+    height: 32px;
+    font-size: 15px;
+}
+
+.drawer-info-grid {
+    flex-direction: row;
+    justify-content: space-between;
+    border-top-width: 1px;
+    border-top-color: #263143;
+    padding-top: 10px;
+}
+
+.drawer-info-item {
+    flex-direction: column;
+    align-items: center;
+}
+
+.drawer-info-label {
+    font-size: 9px;
+    color: #64748b;
+    -unity-font-style: bold;
+    letter-spacing: 0.5px;
+}
+
+.drawer-info-val {
+    font-size: 12px;
+    color: #f1f5f9;
+    -unity-font-style: bold;
+    margin-top: 3px;
+}
+
+.drawer-stats-section {
+    flex-grow: 1;
+}
+
+.drawer-section-heading {
+    font-size: 11px;
+    -unity-font-style: bold;
+    color: #64748b;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+}
+
+.stat-progress-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.stat-progress-name {
+    width: 95px;
+    font-size: 11px;
+    -unity-font-style: bold;
+    color: #94a3b8;
+}
+
+.stat-progress-track {
+    flex-grow: 1;
+    height: 8px;
+    background-color: #232b3a;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-right: 10px;
+}
+
+.stat-progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    background-color: #10b981;
+}
+
+.stat-progress-num {
+    width: 24px;
+    font-size: 12px;
+    -unity-font-style: bold;
+    color: #ffffff;
+    -unity-text-align: middle-right;
 }
