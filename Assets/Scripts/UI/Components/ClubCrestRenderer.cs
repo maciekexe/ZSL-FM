@@ -12,7 +12,8 @@ namespace ZSLFM.UI
         public static void Render(
             VisualElement container,
             ClubSetupSelection selection,
-            Texture2D defaultLogoTexture = null)
+            Texture2D defaultLogoTexture = null,
+            Texture2D customUploadedTexture = null)
         {
             if (container == null || selection == null) return;
 
@@ -23,7 +24,8 @@ namespace ZSLFM.UI
                 palette: selection.Palette,
                 monogram: selection.Monogram,
                 useDefaultZslLogo: selection.UsesDefaultZslLogo,
-                defaultLogoTexture: defaultLogoTexture);
+                defaultLogoTexture: defaultLogoTexture,
+                customUploadedTexture: customUploadedTexture);
         }
 
         public static void Render(
@@ -33,11 +35,20 @@ namespace ZSLFM.UI
             ClubColorPalette palette,
             string monogram,
             bool useDefaultZslLogo = false,
-            Texture2D defaultLogoTexture = null)
+            Texture2D defaultLogoTexture = null,
+            Texture2D customUploadedTexture = null)
         {
             if (container == null) return;
 
             container.Clear();
+
+            if (customUploadedTexture != null)
+            {
+                ResetCustomCrestStyles(container);
+                container.style.backgroundImage = new StyleBackground(customUploadedTexture);
+                container.style.backgroundSize = new BackgroundSize(BackgroundSizeType.Contain);
+                return;
+            }
 
             if (useDefaultZslLogo)
             {
@@ -90,6 +101,7 @@ namespace ZSLFM.UI
             container.style.height = StyleKeyword.Null;
             container.style.maxWidth = StyleKeyword.Null;
             container.style.maxHeight = StyleKeyword.Null;
+            container.style.backgroundSize = StyleKeyword.Null;
             container.style.backgroundColor = StyleKeyword.Null;
             container.style.borderTopWidth = StyleKeyword.Null;
             container.style.borderBottomWidth = StyleKeyword.Null;

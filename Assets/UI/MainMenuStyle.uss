@@ -274,6 +274,10 @@
     flex-direction: row;
 }
 
+.form-row--spaced {
+    margin-top: 8px;
+}
+
 .form-field-grow {
     flex-grow: 1;
     margin-right: 12px;
@@ -281,6 +285,236 @@
 
 .form-field-short {
     width: 110px;
+}
+
+.form-field-half {
+    flex-grow: 1;
+    flex-basis: 0;
+    margin-right: 10px;
+}
+
+.form-field-half-last {
+    flex-grow: 1;
+    flex-basis: 0;
+}
+
+.png-row {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 4px;
+}
+
+.png-path-input {
+    flex-grow: 1;
+    margin-right: 8px;
+}
+
+.png-action-btn {
+    margin-right: 6px;
+    margin-bottom: 0;
+}
+
+.custom-squad-box {
+    margin-top: 6px;
+    padding: 12px;
+    background-color: rgba(12, 16, 18, 0.85);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.custom-player-pos-row {
+    flex-direction: row;
+    margin-top: 8px;
+}
+
+.ovr-slider-row {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 4px;
+    margin-bottom: 10px;
+}
+
+.ovr-label-wide {
+    width: 132px;
+    font-size: 12px;
+    -unity-font-style: bold;
+    color: #ffffff;
+}
+
+.ovr-slider {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.ovr-free-label {
+    font-size: 12px;
+    -unity-font-style: bold;
+    color: #34d399;
+}
+
+.wizard-steps-bar {
+    flex-direction: row;
+    margin-bottom: 14px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    padding-bottom: 10px;
+}
+
+.wizard-step-tab {
+    flex-grow: 1;
+    flex-basis: 0;
+    height: 36px;
+    margin-right: 8px;
+    background-color: rgba(22, 27, 30, 0.85);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.12);
+    border-radius: 0px;
+    color: #94a3b8;
+    font-size: 12px;
+    -unity-font-style: bold;
+}
+
+.wizard-step-tab--active {
+    border-color: #c91f10;
+    background-color: rgba(201, 31, 16, 0.16);
+    color: #ffffff;
+}
+
+.wizard-nav-btn {
+    height: 40px;
+    margin-top: 14px;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.16);
+    border-radius: 0px;
+    color: #ffffff;
+    font-size: 13px;
+    -unity-font-style: bold;
+}
+
+.wizard-nav-btn:hover {
+    background-color: rgba(255, 255, 255, 0.14);
+}
+
+.wizard-nav-btn--next {
+    border-color: #c91f10;
+    background-color: rgba(201, 31, 16, 0.24);
+}
+
+.step2-summary-banner {
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    background-color: rgba(22, 27, 30, 0.9);
+    border-left-width: 3px;
+    border-left-color: #c91f10;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-top-color: rgba(255, 255, 255, 0.08);
+    border-right-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.step2-summary-title {
+    font-size: 14px;
+    -unity-font-style: bold;
+    color: #ffffff;
+}
+
+.step2-summary-desc {
+    font-size: 11px;
+    color: #cbd5e1;
+    white-space: normal;
+    margin-top: 4px;
+}
+
+.keep-replaced-box {
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    background-color: rgba(37, 99, 235, 0.14);
+    border-width: 1px;
+    border-color: rgba(96, 165, 250, 0.45);
+}
+
+.keep-replaced-toggle {
+    color: #e2e8f0;
+    font-size: 12px;
+    -unity-font-style: bold;
+}
+
+.founders-header-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.founders-count-badge {
+    font-size: 11px;
+    -unity-font-style: bold;
+    color: #34d399;
+}
+
+.tier-badge {
+    font-size: 10px;
+    -unity-font-style: bold;
+    padding: 2px 6px;
+    margin-right: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
+}
+
+.tier-title-group {
+    flex-direction: row;
+    align-items: center;
+}
+
+.add-player-btn {
+    height: 34px;
+    background-color: rgba(16, 185, 129, 0.22);
+    border-width: 1px;
+    border-color: #10b981;
+    border-radius: 0px;
+    color: #a7f3d0;
+    font-size: 12px;
+    -unity-font-style: bold;
+}
+
+.add-player-btn:hover {
+    background-color: rgba(16, 185, 129, 0.35);
+    color: #ffffff;
+}
+
+.custom-players-list {
+    margin-top: 8px;
+}
+
+.custom-player-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 8px;
+    margin-bottom: 4px;
+    background-color: rgba(255, 255, 255, 0.04);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.custom-player-info {
+    font-size: 12px;
+    color: #e2e8f0;
+}
+
+.custom-player-remove-btn {
+    height: 22px;
+    padding-left: 8px;
+    padding-right: 8px;
+    background-color: rgba(239, 68, 68, 0.2);
+    border-width: 1px;
+    border-color: rgba(239, 68, 68, 0.5);
+    border-radius: 0px;
+    color: #fecaca;
+    font-size: 11px;
 }
 
 .field-label {
@@ -537,20 +771,37 @@
     align-items: center;
 }
 
+.preview-visuals-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+}
+
 .preview-crest-wrapper {
-    width: 120px;
-    height: 120px;
+    width: 112px;
+    height: 112px;
     background-color: rgba(255, 255, 255, 0.04);
     border-width: 1px;
     border-color: rgba(255, 255, 255, 0.12);
     justify-content: center;
     align-items: center;
-    margin-bottom: 14px;
+    margin-right: 10px;
+}
+
+.preview-jersey-wrapper {
+    width: 112px;
+    height: 112px;
+    background-color: rgba(255, 255, 255, 0.04);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.12);
+    justify-content: center;
+    align-items: center;
 }
 
 .preview-crest {
-    width: 96px;
-    height: 96px;
+    width: 90px;
+    height: 90px;
     background-image: url("zsl_logo.png");
     -unity-background-scale-mode: scale-to-fit;
 }
@@ -567,7 +818,14 @@
     -unity-font-style: bold;
     color: #94a3b8;
     margin-top: 4px;
-    margin-bottom: 18px;
+}
+
+.preview-meta-line {
+    font-size: 11px;
+    color: #cbd5e1;
+    margin-top: 4px;
+    margin-bottom: 14px;
+    -unity-text-align: middle-center;
 }
 
 .preview-stats-row {

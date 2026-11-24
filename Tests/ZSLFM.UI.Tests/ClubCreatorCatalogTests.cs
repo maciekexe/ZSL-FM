@@ -44,7 +44,7 @@ namespace ZSLFM.UI.Tests
         [Fact]
         public void TryBuildCustomClub_ValidInputs_NormalizesNameGeneratesMonogramAndAppliesTier()
         {
-            StarterBudgetTier investorTier = ClubCreatorCatalog.BudgetTiers[2];
+            StarterBudgetTier investorTier = ClubCreatorCatalog.BudgetTiers[3];
             ClubColorPalette bluePalette = ClubCreatorCatalog.Palettes[1];
 
             bool ok = ClubCreatorCatalog.TryBuildCustomClub(

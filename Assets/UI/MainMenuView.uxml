@@ -48,10 +48,25 @@
                                 <ui:ScrollView name="ExistingClubsList" class="clubs-scroll"/>
                             </ui:VisualElement>
 
-                            <!-- TRYB B: KREATOR WŁASNEGO KLUBU -->
+                            <!-- TRYB B: 2-ETAPOWY KREATOR WŁASNEGO KLUBU -->
                             <ui:VisualElement name="CustomClubSection" class="config-section hidden">
-                                <ui:ScrollView class="creator-scroll">
-                                    <ui:Label text="NAZWA I MONOGRAM HERBU" class="section-heading"/>
+                                <!-- PASEK KROKÓW KREATORA -->
+                                <ui:VisualElement class="wizard-steps-bar">
+                                    <ui:Button name="BtnWizardStep1" text="1. Klub, Wygląd i Trudność" class="wizard-step-tab wizard-step-tab--active"/>
+                                    <ui:Button name="BtnWizardStep2" text="2. Założyciele i Kadra" class="wizard-step-tab"/>
+                                </ui:VisualElement>
+
+                                <!-- KROK 1: KLUB, WYGLĄD I POZIOM TRUDNOŚCI -->
+                                <ui:ScrollView name="CreatorStep1Panel" class="creator-scroll">
+                                    <!-- 1. MIEJSCE W LIDZE I RYWAL -->
+                                    <ui:Label text="MIEJSCE W LIDZE (OPCJONALNIE ZASTĄP KLUB)" class="section-heading"/>
+                                    <ui:VisualElement name="ReplacedClubChips" class="chip-grid"/>
+
+                                    <ui:Label text="GŁÓWNY RYWAL (DERBY)" class="section-heading section-heading--spaced"/>
+                                    <ui:VisualElement name="RivalClubChips" class="chip-grid"/>
+
+                                    <!-- 2. PERSONALIZACJA -->
+                                    <ui:Label text="PERSONALIZACJA KLUBU" class="section-heading section-heading--spaced"/>
                                     <ui:VisualElement class="form-row">
                                         <ui:VisualElement class="form-field-grow">
                                             <ui:Label text="Nazwa klubu" class="field-label"/>
@@ -63,6 +78,23 @@
                                         </ui:VisualElement>
                                     </ui:VisualElement>
 
+                                    <ui:VisualElement class="form-row form-row--spaced">
+                                        <ui:VisualElement class="form-field-half">
+                                            <ui:Label text="Miasto" class="field-label"/>
+                                            <ui:TextField name="InputClubCity" value="Gdańsk" class="text-input"/>
+                                        </ui:VisualElement>
+                                        <ui:VisualElement class="form-field-half-last">
+                                            <ui:Label text="Przydomek" class="field-label"/>
+                                            <ui:TextField name="InputClubNickname" value="Łącznościowcy" class="text-input"/>
+                                        </ui:VisualElement>
+                                    </ui:VisualElement>
+
+                                    <ui:VisualElement class="form-row--spaced">
+                                        <ui:Label text="Nazwa stadionu" class="field-label"/>
+                                        <ui:TextField name="InputClubStadium" value="Arena Gdańsk Południe" class="text-input"/>
+                                    </ui:VisualElement>
+
+                                    <!-- 3. BARWY KLUBU (PALETA HSV 2D) -->
                                     <ui:Label text="BARWY KLUBU (PALETA KOLORÓW)" class="section-heading section-heading--spaced"/>
                                     <ui:VisualElement class="color-slot-row">
                                         <ui:Button name="BtnSelectPrimaryColor" class="color-slot-btn color-slot-btn--active">
@@ -92,7 +124,8 @@
                                         <ui:VisualElement name="QuickSwatchesGrid" class="quick-swatches-grid"/>
                                     </ui:VisualElement>
 
-                                    <ui:Label text="KSZTAŁT HERBU" class="section-heading section-heading--spaced"/>
+                                    <!-- 4. HERB I WŁASNY PLIK PNG -->
+                                    <ui:Label text="KSZTAŁT I WZÓR HERBU" class="section-heading section-heading--spaced"/>
                                     <ui:VisualElement class="chip-grid">
                                         <ui:Button name="BtnShapeShield" text="Tarcza" class="chip-btn chip-btn--active"/>
                                         <ui:Button name="BtnShapeRounded" text="Kwadrat" class="chip-btn"/>
@@ -100,7 +133,6 @@
                                         <ui:Button name="BtnShapeSharp" text="Ostra" class="chip-btn"/>
                                     </ui:VisualElement>
 
-                                    <ui:Label text="WZÓR HERBU" class="section-heading section-heading--spaced"/>
                                     <ui:VisualElement class="chip-grid">
                                         <ui:Button name="BtnPatternSolid" text="Jednolity" class="chip-btn"/>
                                         <ui:Button name="BtnPatternSplit" text="Pół na pół" class="chip-btn chip-btn--active"/>
@@ -108,11 +140,80 @@
                                         <ui:Button name="BtnPatternDiagonal" text="Szarfa" class="chip-btn"/>
                                     </ui:VisualElement>
 
-                                    <ui:Label text="BUDŻET STARTOWY (SPONSOR)" class="section-heading section-heading--spaced"/>
+                                    <ui:Label text="LUB WGRAJ WŁASNY HERB (PNG / JPG)" class="field-label"/>
+                                    <ui:VisualElement class="png-row">
+                                        <ui:TextField name="InputCustomLogoPath" placeholder-text="Ścieżka do pliku .png/.jpg..." class="text-input png-path-input"/>
+                                        <ui:Button name="BtnLoadLogoPng" text="Wgraj PNG" class="chip-btn png-action-btn"/>
+                                        <ui:Button name="BtnResetCustomLogo" text="Kreator" class="chip-btn png-action-btn"/>
+                                    </ui:VisualElement>
+
+                                    <!-- 5. WZÓR KOSZULKI 2D -->
+                                    <ui:Label text="WZÓR KOSZULKI MECZOWEJ" class="section-heading section-heading--spaced"/>
+                                    <ui:VisualElement class="chip-grid">
+                                        <ui:Button name="BtnJerseySolid" text="Jednolita" class="chip-btn chip-btn--active"/>
+                                        <ui:Button name="BtnJerseyStripes" text="Pasy" class="chip-btn"/>
+                                        <ui:Button name="BtnJerseyHoop" text="Pas poziomy" class="chip-btn"/>
+                                        <ui:Button name="BtnJerseySash" text="Szarfa" class="chip-btn"/>
+                                        <ui:Button name="BtnJerseySleeves" text="Rękawy" class="chip-btn"/>
+                                    </ui:VisualElement>
+
+                                    <!-- 6. JEDEN SPÓJNY WYBÓR: POZIOM TRUDNOŚCI (BUDŻET + KADRA) -->
+                                    <ui:Label text="POZIOM TRUDNOŚCI (BUDŻET I KADRA STARTOWA)" class="section-heading section-heading--spaced"/>
                                     <ui:VisualElement name="BudgetTiersContainer" class="tiers-list"/>
 
-                                    <ui:Label name="CreatorErrorLabel" text="" class="error-banner hidden"/>
+                                    <ui:Button name="BtnNextCreatorStep" text="Dalej: Założyciele Klubu →" class="wizard-nav-btn wizard-nav-btn--next"/>
                                 </ui:ScrollView>
+
+                                <!-- KROK 2: DARMOWI ZAŁOŻYCIELE I OPCJONALNE PRZEJĘCIE KADRY -->
+                                <ui:ScrollView name="CreatorStep2Panel" class="creator-scroll hidden">
+                                    <ui:VisualElement class="step2-summary-banner">
+                                        <ui:Label name="LblStep2DifficultySummary" text="Poziom: HARDCORE — Od zera (0 PLN)" class="step2-summary-title"/>
+                                        <ui:Label name="LblStep2SquadInfo" text="Na tym poziomie startujesz z 12 darmowymi amatorami (OVR 42-52) oraz możesz dodać do 4 darmowych Założycieli." class="step2-summary-desc"/>
+                                    </ui:VisualElement>
+
+                                    <ui:VisualElement name="KeepReplacedBox" class="keep-replaced-box hidden">
+                                        <ui:Toggle name="ToggleKeepReplacedSquad" label="Przejmij kadrę zastępowanego klubu zamiast nowej (dostępne na Średnim/Łatwym)" class="keep-replaced-toggle"/>
+                                    </ui:VisualElement>
+
+                                    <ui:VisualElement name="FoundersBuilderBox" class="custom-squad-box">
+                                        <ui:VisualElement class="founders-header-row">
+                                            <ui:Label text="ZAŁOŻYCIELE KLUBU (TY I ZNAJOMI — ZA DARMO)" class="section-heading"/>
+                                            <ui:Label name="LblFoundersCount" text="Dodano: 0 / 4" class="founders-count-badge"/>
+                                        </ui:VisualElement>
+
+                                        <ui:VisualElement class="form-row">
+                                            <ui:VisualElement class="form-field-half">
+                                                <ui:Label text="Imię" class="field-label"/>
+                                                <ui:TextField name="InputCustomPlayerFirst" placeholder-text="np. Maciej" class="text-input"/>
+                                            </ui:VisualElement>
+                                            <ui:VisualElement class="form-field-half-last">
+                                                <ui:Label text="Nazwisko" class="field-label"/>
+                                                <ui:TextField name="InputCustomPlayerLast" placeholder-text="np. Kamiński" class="text-input"/>
+                                            </ui:VisualElement>
+                                        </ui:VisualElement>
+
+                                        <ui:Label text="Pozycja" class="field-label form-row--spaced"/>
+                                        <ui:VisualElement class="custom-player-pos-row">
+                                            <ui:Button name="BtnPosGK" text="GK" class="chip-btn"/>
+                                            <ui:Button name="BtnPosDEF" text="DEF" class="chip-btn"/>
+                                            <ui:Button name="BtnPosMID" text="MID" class="chip-btn chip-btn--active"/>
+                                            <ui:Button name="BtnPosSTR" text="STR" class="chip-btn"/>
+                                        </ui:VisualElement>
+
+                                        <ui:VisualElement class="ovr-slider-row">
+                                            <ui:Label name="LblCustomPlayerOvr" text="OVR: 55 (maks. 58)" class="ovr-label-wide"/>
+                                            <ui:SliderInt name="SliderCustomPlayerOvr" low-value="45" high-value="58" value="55" class="ovr-slider"/>
+                                            <ui:Label text="Koszt: 0 PLN" class="ovr-free-label"/>
+                                        </ui:VisualElement>
+
+                                        <ui:Button name="BtnAddCustomPlayer" text="+ Dodaj Założyciela (za darmo)" class="add-player-btn"/>
+                                        <ui:VisualElement name="CustomPlayersList" class="custom-players-list"/>
+                                    </ui:VisualElement>
+
+                                    <ui:Button name="BtnPrevCreatorStep" text="← Wróć do konfiguracji klubu" class="wizard-nav-btn"/>
+                                </ui:ScrollView>
+
+                                <ui:Label name="CreatorErrorLabel" text="" class="error-banner hidden"/>
                             </ui:VisualElement>
                         </ui:VisualElement>
 
@@ -120,11 +221,16 @@
                         <ui:VisualElement class="preview-column">
                             <ui:Label text="PODGLĄD KLUBU" class="section-heading"/>
                             <ui:VisualElement class="preview-card">
-                                <ui:VisualElement class="preview-crest-wrapper">
-                                    <ui:VisualElement name="PreviewCrest" class="preview-crest"/>
+                                <ui:VisualElement class="preview-visuals-row">
+                                    <ui:VisualElement class="preview-crest-wrapper">
+                                        <ui:VisualElement name="PreviewCrest" class="preview-crest"/>
+                                    </ui:VisualElement>
+                                    <ui:VisualElement name="PreviewJerseyBox" class="preview-jersey-wrapper"/>
                                 </ui:VisualElement>
+
                                 <ui:Label name="PreviewClubName" text="ZSŁ Gdańsk" class="preview-club-name"/>
                                 <ui:Label name="PreviewClubType" text="Istniejący Klub" class="preview-club-type"/>
+                                <ui:Label name="PreviewMetaLine" text="" class="preview-meta-line hidden"/>
 
                                 <ui:VisualElement class="preview-stats-row">
                                     <ui:VisualElement class="stat-card">

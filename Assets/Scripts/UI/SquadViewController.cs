@@ -32,6 +32,7 @@ namespace ZSLFM.UI
         private List<PlayerProfileDto> _squadPlayers;
         private List<PlayerProfileDto> _marketPlayers;
         private double _activeClubBudget = UiSampleSquadDataProvider.DefaultClubBudget;
+        private Texture2D _customSessionLogoTexture;
         private string _searchQuery = string.Empty;
         private bool _isShowingSquadTab = true;
 
@@ -49,16 +50,21 @@ namespace ZSLFM.UI
             SetupNavigation(root);
             SetupSearch(root);
 
-            _squadPlayers = UiSampleSquadDataProvider.CreateSampleSquadPlayers();
             _marketPlayers = UiSampleSquadDataProvider.CreateSampleMarketPlayers();
-
             ApplyInitialClubSession();
+
             RenderSquadList();
             RenderMarketList();
         }
 
         private void OnDisable()
         {
+            if (_customSessionLogoTexture != null)
+            {
+                Destroy(_customSessionLogoTexture);
+                _customSessionLogoTexture = null;
+            }
+
             _themeApplier?.Dispose();
             _themeApplier = null;
         }
@@ -90,23 +96,45 @@ namespace ZSLFM.UI
             ClubSetupSelection selection = ClubSessionState.ActiveSelection;
             if (selection == null)
             {
+                _squadPlayers = UiSampleSquadDataProvider.CreateSampleSquadPlayers();
                 _activeClubBudget = UiSampleSquadDataProvider.DefaultClubBudget;
                 ApplyClubTheme(ClubThemeApplier.CreateDefaultZslTheme());
                 return;
             }
 
-            _activeClubBudget = selection.Budget;
-            if (_clubBudgetLabel != null) _clubBudgetLabel.text = $"{selection.Budget:N0} PLN";
+            _squadPlayers = selection.StartingSquad != null
+                ? new List<PlayerProfileDto>(selection.StartingSquad)
+                : UiSampleSquadDataProvider.CreateSampleSquadPlayers();
+
+            _activeClubBudget = selection.RemainingBudget;
+            if (_clubBudgetLabel != null) _clubBudgetLabel.text = $"{selection.RemainingBudget:N0} PLN";
             if (_clubReputationLabel != null) _clubReputationLabel.text = selection.Reputation.ToString();
-            if (_sectionSubtitle != null) _sectionSubtitle.text = $"{selection.ClubName} • Pierwszy Skład i Rezerwy";
+
+            if (_sectionSubtitle != null)
+            {
+                string extra = !string.IsNullOrWhiteSpace(selection.City) && !string.IsNullOrWhiteSpace(selection.StadiumName)
+                    ? $"{selection.City} • {selection.StadiumName}"
+                    : "Pierwszy Skład i Rezerwy";
+                _sectionSubtitle.text = $"{selection.ClubName} • {extra}";
+            }
 
             ApplyClubTheme(ClubThemeMapper.ToClubThemeDto(selection));
-            if (_clubLogoElement != null && !selection.UsesDefaultZslLogo)
+
+            Texture2D customTex = null;
+            if (!string.IsNullOrWhiteSpace(selection.CustomLogoFilePath) &&
+                CustomLogoLoader.TryLoadTextureFromFile(selection.CustomLogoFilePath, out Texture2D loaded, out _))
+            {
+                _customSessionLogoTexture = loaded;
+                customTex = loaded;
+            }
+
+            if (_clubLogoElement != null && !selection.UsesDefaultZslLogo && customTex == null)
             {
                 _clubLogoElement.style.width = 44;
                 _clubLogoElement.style.height = 44;
             }
-            ClubCrestRenderer.Render(_clubLogoElement, selection);
+
+            ClubCrestRenderer.Render(_clubLogoElement, selection, customUploadedTexture: customTex);
         }
 
         private void InitializeComponents(VisualElement root)

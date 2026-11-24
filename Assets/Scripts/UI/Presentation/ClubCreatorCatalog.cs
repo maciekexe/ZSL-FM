@@ -60,23 +60,45 @@ namespace ZSLFM.UI
         public static IReadOnlyList<StarterBudgetTier> BudgetTiers { get; } = new[]
         {
             new StarterBudgetTier(
+                id: "hardcore-zero",
+                difficultyType: DifficultyTierType.HardcoreZero,
+                difficultyLabel: "HARDCORE",
+                title: "Od zera (Amatorzy)",
+                budget: 0.0,
+                reputation: 15,
+                maxFounderOvr: 58,
+                allowsReplacedClubSquad: false,
+                description: "0 PLN na start, 12 darmowych amatorów (OVR 42-52). Szukasz pierwszych sponsorów."),
+            new StarterBudgetTier(
                 id: "school-club",
+                difficultyType: DifficultyTierType.SchoolClub,
+                difficultyLabel: "TRUDNY",
                 title: "Klub Szkolny",
                 budget: 200000.0,
                 reputation: 35,
-                description: "Skromny start (200 tys. PLN) — budujesz krok po kroku"),
+                maxFounderOvr: 65,
+                allowsReplacedClubSquad: false,
+                description: "200 tys. PLN + 12 młodych wychowanków (15-17 lat, OVR 48-58). Budujesz drużynę od podstaw."),
             new StarterBudgetTier(
                 id: "newcomer",
+                difficultyType: DifficultyTierType.LeagueNewcomer,
+                difficultyLabel: "ŚREDNI",
                 title: "Beniaminek Ligi",
                 budget: 750000.0,
                 reputation: 50,
-                description: "Zbalansowany budżet (750 tys. PLN) na pierwsze transfery"),
+                maxFounderOvr: 75,
+                allowsReplacedClubSquad: true,
+                description: "750 tys. PLN i zbalansowana kadra 18 graczy (lub przejęcie zastępowanej drużyny)."),
             new StarterBudgetTier(
                 id: "investor",
+                difficultyType: DifficultyTierType.InvestorProject,
+                difficultyLabel: "ŁATWY",
                 title: "Projekt Inwestora",
                 budget: 2000000.0,
                 reputation: 65,
-                description: "Mocny kapitał (2 mln PLN) na szybkie wzmocnienia")
+                maxFounderOvr: 85,
+                allowsReplacedClubSquad: true,
+                description: "2 mln PLN od sponsora i mocna kadra 18 graczy (lub przejęcie zastępowanej drużyny).")
         };
 
         public static IReadOnlyList<ExistingClubPreset> ExistingClubs { get; } = new[]
@@ -138,6 +160,10 @@ namespace ZSLFM.UI
         {
             if (preset == null) throw new ArgumentNullException(nameof(preset));
 
+            var squad = ClubStarterSquadBuilder.BuildInheritedSquad(
+                clubName: preset.ClubName,
+                sourceClubName: preset.ClubName);
+
             return new ClubSetupSelection(
                 clubName: preset.ClubName,
                 monogram: preset.Monogram,
@@ -147,7 +173,13 @@ namespace ZSLFM.UI
                 crestShape: preset.CrestShape,
                 crestPattern: preset.CrestPattern,
                 isCustomClub: false,
-                usesDefaultZslLogo: preset.UsesDefaultZslLogo);
+                usesDefaultZslLogo: preset.UsesDefaultZslLogo,
+                replacedClubId: preset.Id,
+                replacedClubName: preset.ClubName,
+                difficultyType: DifficultyTierType.LeagueNewcomer,
+                squadMode: SquadBuildMode.KeepReplacedClub,
+                startingSquad: squad,
+                remainingBudget: preset.Budget);
         }
 
         public static bool TryBuildCustomClub(
@@ -157,6 +189,45 @@ namespace ZSLFM.UI
             CrestShape crestShape,
             CrestPattern crestPattern,
             StarterBudgetTier budgetTier,
+            out ClubSetupSelection selection,
+            out string validationError)
+        {
+            return TryBuildCustomClub(
+                rawClubName: rawClubName,
+                rawMonogram: rawMonogram,
+                palette: palette,
+                crestShape: crestShape,
+                crestPattern: crestPattern,
+                jerseyPattern: JerseyPattern.Solid,
+                budgetTier: budgetTier,
+                city: string.Empty,
+                nickname: string.Empty,
+                stadiumName: string.Empty,
+                replacedClub: null,
+                rivalClub: ExistingClubs[1],
+                customLogoFilePath: string.Empty,
+                keepReplacedClubSquad: false,
+                founders: null,
+                selection: out selection,
+                validationError: out validationError);
+        }
+
+        public static bool TryBuildCustomClub(
+            string rawClubName,
+            string rawMonogram,
+            ClubColorPalette palette,
+            CrestShape crestShape,
+            CrestPattern crestPattern,
+            JerseyPattern jerseyPattern,
+            StarterBudgetTier budgetTier,
+            string city,
+            string nickname,
+            string stadiumName,
+            ExistingClubPreset replacedClub,
+            ExistingClubPreset rivalClub,
+            string customLogoFilePath,
+            bool keepReplacedClubSquad,
+            IReadOnlyList<CustomPlayerDraft> founders,
             out ClubSetupSelection selection,
             out string validationError)
         {
@@ -175,9 +246,63 @@ namespace ZSLFM.UI
                 return false;
             }
 
+            StarterBudgetTier effectiveTier = budgetTier ?? BudgetTiers[0];
+            if (keepReplacedClubSquad)
+            {
+                if (!effectiveTier.AllowsReplacedClubSquad)
+                {
+                    selection = null;
+                    validationError = $"Przejęcie kadry zastępowanego klubu jest dostępne tylko na poziomie Średnim i Łatwym.";
+                    return false;
+                }
+
+                if (replacedClub == null)
+                {
+                    selection = null;
+                    validationError = "Aby przejąć kadrę zastępowanego klubu, wybierz najpierw klub do zastąpienia w Kroku 1.";
+                    return false;
+                }
+            }
+
+            if (founders != null)
+            {
+                if (founders.Count > ClubStarterSquadBuilder.MaxFoundersCount)
+                {
+                    selection = null;
+                    validationError = $"Maksymalna liczba Założycieli to {ClubStarterSquadBuilder.MaxFoundersCount}.";
+                    return false;
+                }
+
+                foreach (CustomPlayerDraft founder in founders)
+                {
+                    if (founder != null && founder.OverallSkill > effectiveTier.MaxFounderOvr)
+                    {
+                        selection = null;
+                        validationError = $"Założyciel {founder.FullName} ma OVR {founder.OverallSkill}, co przekracza limit ({effectiveTier.MaxFounderOvr}) dla poziomu {effectiveTier.DifficultyLabel}.";
+                        return false;
+                    }
+                }
+            }
+
             string monogram = NormalizeMonogram(rawMonogram, normalizedName);
             ClubColorPalette effectivePalette = palette ?? Palettes[0];
-            StarterBudgetTier effectiveTier = budgetTier ?? BudgetTiers[0];
+            string cleanCity = NormalizeOptionalField(city, "Gdańsk");
+            string cleanNickname = NormalizeOptionalField(nickname, "");
+            string cleanStadium = NormalizeOptionalField(stadiumName, $"Stadion {normalizedName}");
+            string rivalName = rivalClub != null ? rivalClub.ClubName : string.Empty;
+            string replacedId = replacedClub != null ? replacedClub.Id : string.Empty;
+            string replacedName = replacedClub != null ? replacedClub.ClubName : string.Empty;
+
+            SquadBuildMode effectiveSquadMode = keepReplacedClubSquad
+                ? SquadBuildMode.KeepReplacedClub
+                : SquadBuildMode.GeneratedByDifficulty;
+
+            var startingSquad = ClubStarterSquadBuilder.BuildStartingSquadForDifficulty(
+                clubName: normalizedName,
+                difficulty: effectiveTier,
+                keepReplacedClubSquad: keepReplacedClubSquad,
+                replacedClubName: replacedName,
+                founders: founders);
 
             selection = new ClubSetupSelection(
                 clubName: normalizedName,
@@ -188,10 +313,29 @@ namespace ZSLFM.UI
                 crestShape: crestShape,
                 crestPattern: crestPattern,
                 isCustomClub: true,
-                usesDefaultZslLogo: false);
+                usesDefaultZslLogo: false,
+                jerseyPattern: jerseyPattern,
+                customLogoFilePath: (customLogoFilePath ?? string.Empty).Trim(),
+                city: cleanCity,
+                nickname: cleanNickname,
+                stadiumName: cleanStadium,
+                replacedClubId: replacedId,
+                replacedClubName: replacedName,
+                rivalClubName: rivalName,
+                difficultyType: effectiveTier.DifficultyType,
+                squadMode: effectiveSquadMode,
+                startingSquad: startingSquad,
+                remainingBudget: effectiveTier.Budget);
 
             validationError = string.Empty;
             return true;
+        }
+
+        private static string NormalizeOptionalField(string raw, string fallback)
+        {
+            if (string.IsNullOrWhiteSpace(raw)) return fallback;
+            string trimmed = raw.Trim();
+            return trimmed.Length > 36 ? trimmed.Substring(0, 36).TrimEnd() : trimmed;
         }
 
         public static string NormalizeClubName(string rawClubName)

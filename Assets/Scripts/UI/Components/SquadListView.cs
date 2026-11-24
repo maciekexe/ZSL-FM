@@ -54,6 +54,23 @@ namespace ZSLFM.UI
             List<PlayerProfileDto> filtered = PlayerListQueryHelper.FilterSquad(players, _lastSearchQuery);
             PlayerListQueryHelper.SortInPlace(filtered, _sortField, _sortAscending);
 
+            if (filtered.Count == 0)
+            {
+                string emptyMessage = players.Count == 0
+                    ? "Kadra zespołu jest pusta — przejdź do zakładki Transfery, aby zakontraktować zawodników."
+                    : "Brak zawodników pasujących do wyszukiwania.";
+
+                Label emptyLabel = new Label(emptyMessage);
+                emptyLabel.style.color = new StyleColor(new UnityEngine.Color32(148, 163, 184, 255));
+                emptyLabel.style.fontSize = 13;
+                emptyLabel.style.unityTextAlign = UnityEngine.TextAnchor.MiddleCenter;
+                emptyLabel.style.paddingTop = 28;
+                emptyLabel.style.paddingBottom = 28;
+                emptyLabel.style.whiteSpace = WhiteSpace.Normal;
+                _playersContainer.Add(emptyLabel);
+                return;
+            }
+
             foreach (PlayerProfileDto player in filtered)
             {
                 _playersContainer.Add(BuildRow(player));
