@@ -1,35 +1,62 @@
 /* ==========================================================================
    ŁĄCZNOŚĆ FM - SQUAD & TRANSFER MARKET VIEW STYLE (USS)
-   Ciemny motyw Football Managera (grafitowe tło, zielone akcenty, zaokrąglone karty)
-   Odpowiednik Tailwind CSS w silniku Unity UI Toolkit
+   Dynamiczny motyw klubowy (Makieta: ZSŁ Gdańsk - Czerwień #C91F10 + Grafit #3A4548)
+   Ostre kontenery bez zaokrągleń (border-radius: 0px) + pełnoekranowy gradient tła
    ========================================================================== */
 
-/* Klasa narzędziowa ukrywająca elementy (odpowiednik Tailwind .hidden / display: none) */
+/* Klasa narzędziowa ukrywająca elementy */
 .hidden {
     display: none;
 }
 
-/* Główny kontener widoku */
+/* Główny kontener widoku z gradientem całego ekranu z kolorów loga klubu */
 .root-container {
     flex-grow: 1;
     width: 100%;
     height: 100%;
-    background-color: #0f1218;
+    background-color: #101416;
+    background-image: url("club_bg_gradient.png");
+    -unity-background-scale-mode: stretch-to-fill;
     color: #e2e8f0;
     font-size: 14px;
 }
 
 /* ---------------- GÓRNY PASEK (HEADER BAR) ---------------- */
 .header-bar {
-    height: 70px;
-    background-color: #161b26;
+    height: 76px;
+    background-color: rgba(16, 20, 22, 0.55);
     border-bottom-width: 1px;
-    border-bottom-color: #262e3d;
+    border-bottom-color: rgba(255, 255, 255, 0.08);
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding-left: 24px;
+    padding-left: 20px;
     padding-right: 24px;
+}
+
+.club-header-left {
+    flex-direction: row;
+    align-items: center;
+}
+
+.club-logo-frame {
+    width: 72px;
+    height: 54px;
+    background-color: #f8fafc;
+    border-width: 1px;
+    border-color: #3a4548;
+    padding: 4px;
+    margin-right: 16px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0px;
+}
+
+.club-logo-image {
+    width: 100%;
+    height: 100%;
+    background-image: url("zsl_logo.png");
+    -unity-background-scale-mode: scale-to-fit;
 }
 
 .club-brand {
@@ -46,7 +73,7 @@
 
 .club-subtitle {
     font-size: 11px;
-    color: #10b981;
+    color: #ef4444;
     -unity-font-style: bold;
     letter-spacing: 1px;
 }
@@ -57,21 +84,21 @@
 }
 
 .stat-card {
-    background-color: #1d2332;
+    background-color: rgba(22, 27, 30, 0.82);
     padding-top: 6px;
     padding-bottom: 6px;
     padding-left: 14px;
     padding-right: 14px;
-    border-radius: 6px;
+    border-radius: 0px;
     border-width: 1px;
-    border-color: #2b3548;
+    border-color: rgba(255, 255, 255, 0.1);
     margin-left: 12px;
-    min-width: 110px;
+    min-width: 115px;
 }
 
 .stat-label {
     font-size: 10px;
-    color: #8896ab;
+    color: #94a3b8;
     -unity-font-style: bold;
     margin-bottom: 2px;
 }
@@ -83,7 +110,7 @@
 }
 
 .text-accent {
-    color: #10b981;
+    color: #ef4444;
 }
 
 /* ---------------- UKŁAD GŁÓWNY (MAIN CONTAINER) ---------------- */
@@ -95,9 +122,9 @@
 /* ---------------- PANEL BOCZNY (SIDEBAR) ---------------- */
 .sidebar {
     width: 220px;
-    background-color: #131720;
+    background-color: rgba(14, 18, 20, 0.72);
     border-right-width: 1px;
-    border-right-color: #262e3d;
+    border-right-color: rgba(255, 255, 255, 0.08);
     padding-top: 20px;
     padding-left: 12px;
     padding-right: 12px;
@@ -106,7 +133,7 @@
 .sidebar-heading {
     font-size: 11px;
     -unity-font-style: bold;
-    color: #64748b;
+    color: #94a3b8;
     margin-bottom: 12px;
     margin-left: 8px;
     letter-spacing: 1px;
@@ -114,11 +141,11 @@
 
 .nav-button {
     height: 42px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     background-color: transparent;
     border-width: 0;
-    border-radius: 8px;
-    color: #94a3b8;
+    border-radius: 0px;
+    color: #cbd5e1;
     font-size: 14px;
     -unity-font-style: bold;
     -unity-text-align: middle-left;
@@ -128,15 +155,15 @@
 }
 
 .nav-button:hover {
-    background-color: #1f2736;
-    color: #f8fafc;
+    background-color: rgba(255, 255, 255, 0.07);
+    color: #ffffff;
 }
 
 .nav-button--active {
-    background-color: #1a2736;
-    color: #10b981;
+    background-color: rgba(201, 31, 16, 0.18);
+    color: #fca5a5;
     border-left-width: 4px;
-    border-left-color: #10b981;
+    border-left-color: #c91f10;
 }
 
 /* ---------------- GŁÓWNY OBSZAR ROBOCZY (CONTENT AREA) ---------------- */
@@ -146,7 +173,7 @@
     padding-bottom: 20px;
     padding-left: 28px;
     padding-right: 28px;
-    background-color: #0f1218;
+    background-color: transparent;
 }
 
 .content-header {
@@ -167,35 +194,58 @@
 
 .section-subtitle {
     font-size: 12px;
-    color: #64748b;
+    color: #94a3b8;
     margin-top: 3px;
 }
 
-/* ---------------- WYSZUKIWARKA (SEARCH FIELD) ---------------- */
-.search-input {
+/* ---------------- WYSZUKIWARKA Z WINDOWSOWĄ LUPĄ ---------------- */
+.search-box {
+    flex-direction: row;
+    align-items: center;
     width: 280px;
-    height: 38px;
-    border-radius: 19px;
-    background-color: #181f2c;
+    height: 36px;
+    border-radius: 0px;
+    background-color: rgba(18, 22, 25, 0.85);
     border-width: 1px;
-    border-color: #2b374c;
-    padding-left: 16px;
-    padding-right: 16px;
-    color: #f1f5f9;
-    font-size: 13px;
+    border-color: #3a4548;
+    padding-left: 10px;
+    padding-right: 10px;
     transition-property: border-color, background-color;
     transition-duration: 0.15s;
 }
 
-.search-input:focus {
-    border-color: #10b981;
-    background-color: #1d2536;
+.search-box:hover {
+    border-color: #64748b;
+}
+
+.search-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    flex-shrink: 0;
+    background-image: url("icon_search.png");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.search-input {
+    flex-grow: 1;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    border-width: 0;
+    border-radius: 0px;
+    color: #f8fafc;
+    font-size: 13px;
 }
 
 .search-input > #unity-text-input {
     background-color: transparent;
     border-width: 0;
+    border-radius: 0px;
     color: #f8fafc;
+    padding: 0;
+    margin: 0;
+    --unity-cursor-color: #f8fafc;
 }
 
 /* ---------------- OBSZAR ROBOCZY (TABELA + BOCZNY PROFIL) ---------------- */
@@ -209,7 +259,6 @@
     min-width: 500px;
 }
 
-/* Kontenery poszczególnych zakładek */
 .tab-container {
     flex-grow: 1;
 }
@@ -224,7 +273,7 @@
 .filter-label {
     font-size: 11px;
     -unity-font-style: bold;
-    color: #64748b;
+    color: #94a3b8;
     margin-right: 12px;
     letter-spacing: 0.5px;
 }
@@ -233,12 +282,12 @@
     height: 30px;
     padding-left: 14px;
     padding-right: 14px;
-    margin-right: 8px;
-    background-color: #1a202c;
+    margin-right: 6px;
+    background-color: rgba(22, 27, 30, 0.82);
     border-width: 1px;
-    border-color: #2d3748;
-    border-radius: 15px;
-    color: #94a3b8;
+    border-color: #3a4548;
+    border-radius: 0px;
+    color: #cbd5e1;
     font-size: 12px;
     -unity-font-style: bold;
     transition-property: background-color, border-color, color;
@@ -246,15 +295,15 @@
 }
 
 .filter-btn:hover {
-    background-color: #283347;
+    background-color: rgba(255, 255, 255, 0.1);
     color: #ffffff;
-    border-color: #4a5568;
+    border-color: #64748b;
 }
 
 .filter-btn--active {
-    background-color: #064e3b;
-    border-color: #10b981;
-    color: #34d399;
+    background-color: rgba(201, 31, 16, 0.25);
+    border-color: #c91f10;
+    color: #fca5a5;
 }
 
 /* ---------------- NAGŁÓWKI TABELI I SORTOWANIE ---------------- */
@@ -265,22 +314,25 @@
     padding-right: 16px;
     padding-top: 10px;
     padding-bottom: 10px;
-    background-color: #161b24;
-    border-radius: 6px;
-    margin-bottom: 8px;
+    background-color: rgba(16, 20, 22, 0.88);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.08);
+    border-radius: 0px;
+    margin-bottom: 6px;
 }
 
 .col-header {
     font-size: 11px;
     -unity-font-style: bold;
-    color: #64748b;
+    color: #94a3b8;
     letter-spacing: 0.5px;
 }
 
 .col-header-btn {
     background-color: transparent;
     border-width: 0;
-    color: #64748b;
+    border-radius: 0px;
+    color: #94a3b8;
     font-size: 11px;
     -unity-font-style: bold;
     letter-spacing: 0.5px;
@@ -292,11 +344,11 @@
 }
 
 .col-header-btn:hover {
-    color: #38bdf8;
+    color: #fca5a5;
 }
 
 .col-header-btn--active {
-    color: #10b981;
+    color: #ef4444;
 }
 
 /* Kolumny tabeli Kadry */
@@ -309,7 +361,7 @@
 }
 
 .col-skill {
-    width: 90px;
+    width: 100px;
     -unity-text-align: middle-center;
 }
 
@@ -328,7 +380,7 @@
 }
 
 .col-market-skill {
-    width: 80px;
+    width: 90px;
     -unity-text-align: middle-center;
 }
 
@@ -351,11 +403,11 @@
 .player-row {
     flex-direction: row;
     align-items: center;
-    background-color: #161a23;
-    border-radius: 8px;
+    background-color: rgba(20, 24, 27, 0.8);
+    border-radius: 0px;
     border-width: 1px;
-    border-color: #222938;
-    margin-bottom: 6px;
+    border-color: rgba(255, 255, 255, 0.06);
+    margin-bottom: 4px;
     padding-left: 16px;
     padding-right: 16px;
     height: 48px;
@@ -364,40 +416,42 @@
 }
 
 .player-row:hover {
-    background-color: #1c2230;
-    border-color: #333d52;
+    background-color: rgba(34, 41, 45, 0.9);
+    border-color: rgba(255, 255, 255, 0.18);
 }
 
 .player-row--selected {
-    background-color: #1c2536;
-    border-color: #10b981;
+    background-color: rgba(201, 31, 16, 0.14);
+    border-color: #c91f10;
     border-left-width: 4px;
-    border-left-color: #10b981;
+    border-left-color: #c91f10;
 }
 
 .player-pos-badge {
     width: 44px;
     height: 26px;
-    border-radius: 4px;
-    background-color: #232b3c;
+    border-radius: 0px;
+    background-color: #283135;
+    border-width: 1px;
+    border-color: #3a4548;
     -unity-text-align: middle-center;
     font-size: 11px;
     -unity-font-style: bold;
-    color: #cbd5e1;
+    color: #e2e8f0;
 }
 
 .player-name-label {
     flex-grow: 1;
     font-size: 14px;
     -unity-font-style: bold;
-    color: #f1f5f9;
+    color: #f8fafc;
     margin-left: 16px;
 }
 
 .player-skill-badge {
     width: 42px;
     height: 28px;
-    border-radius: 6px;
+    border-radius: 0px;
     -unity-text-align: middle-center;
     font-size: 13px;
     -unity-font-style: bold;
@@ -424,11 +478,11 @@
 .market-row {
     flex-direction: row;
     align-items: center;
-    background-color: #161a23;
-    border-radius: 8px;
+    background-color: rgba(20, 24, 27, 0.8);
+    border-radius: 0px;
     border-width: 1px;
-    border-color: #222938;
-    margin-bottom: 6px;
+    border-color: rgba(255, 255, 255, 0.06);
+    margin-bottom: 4px;
     padding-left: 16px;
     padding-right: 16px;
     height: 52px;
@@ -437,14 +491,14 @@
 }
 
 .market-row:hover {
-    background-color: #1c2230;
-    border-color: #333d52;
+    background-color: rgba(34, 41, 45, 0.9);
+    border-color: rgba(255, 255, 255, 0.18);
 }
 
 .club-pill {
     width: 140px;
     font-size: 12px;
-    color: #94a3b8;
+    color: #cbd5e1;
     -unity-font-style: bold;
 }
 
@@ -460,10 +514,10 @@
 .btn-bid {
     width: 110px;
     height: 32px;
-    background-color: #10b981;
+    background-color: #c91f10;
     color: #ffffff;
     border-width: 0;
-    border-radius: 6px;
+    border-radius: 0px;
     font-size: 12px;
     -unity-font-style: bold;
     transition-property: background-color;
@@ -471,21 +525,21 @@
 }
 
 .btn-bid:hover {
-    background-color: #059669;
+    background-color: #e02e1e;
 }
 
 .btn-bid:active {
-    background-color: #047857;
+    background-color: #9e180d;
 }
 
 /* ---------------- BOCZNY PANEL PROFILU ZAWODNIKA (DRAWER) ---------------- */
 .player-details-drawer {
     width: 320px;
     margin-left: 20px;
-    background-color: #141822;
+    background-color: rgba(16, 20, 22, 0.88);
     border-width: 1px;
-    border-color: #262f42;
-    border-radius: 10px;
+    border-color: #3a4548;
+    border-radius: 0px;
     padding: 18px;
     flex-shrink: 0;
 }
@@ -497,25 +551,26 @@
     margin-bottom: 14px;
     padding-bottom: 8px;
     border-bottom-width: 1px;
-    border-bottom-color: #222b3b;
+    border-bottom-color: #2c3538;
 }
 
 .drawer-title {
     font-size: 12px;
     -unity-font-style: bold;
-    color: #10b981;
+    color: #ef4444;
     letter-spacing: 1px;
 }
 
 .drawer-close-btn {
     width: 26px;
     height: 26px;
-    border-radius: 13px;
-    background-color: #1f2736;
-    color: #94a3b8;
-    border-width: 0;
+    border-radius: 0px;
+    background-color: #252c2f;
+    color: #cbd5e1;
+    border-width: 1px;
+    border-color: #3a4548;
     -unity-text-align: middle-center;
-    font-size: 13px;
+    font-size: 12px;
     -unity-font-style: bold;
     padding: 0;
     transition-property: background-color, color;
@@ -523,17 +578,18 @@
 }
 
 .drawer-close-btn:hover {
-    background-color: #ef4444;
+    background-color: #c91f10;
     color: #ffffff;
+    border-color: #c91f10;
 }
 
 .drawer-profile-card {
-    background-color: #1a202c;
-    border-radius: 8px;
+    background-color: rgba(24, 30, 33, 0.9);
+    border-radius: 0px;
     padding: 14px;
     margin-bottom: 16px;
     border-width: 1px;
-    border-color: #2a3446;
+    border-color: #3a4548;
 }
 
 .drawer-player-main {
@@ -572,7 +628,7 @@
     flex-direction: row;
     justify-content: space-between;
     border-top-width: 1px;
-    border-top-color: #263143;
+    border-top-color: #2c3538;
     padding-top: 10px;
 }
 
@@ -583,7 +639,7 @@
 
 .drawer-info-label {
     font-size: 9px;
-    color: #64748b;
+    color: #94a3b8;
     -unity-font-style: bold;
     letter-spacing: 0.5px;
 }
@@ -602,7 +658,7 @@
 .drawer-section-heading {
     font-size: 11px;
     -unity-font-style: bold;
-    color: #64748b;
+    color: #94a3b8;
     margin-bottom: 12px;
     letter-spacing: 0.5px;
 }
@@ -617,22 +673,22 @@
     width: 95px;
     font-size: 11px;
     -unity-font-style: bold;
-    color: #94a3b8;
+    color: #cbd5e1;
 }
 
 .stat-progress-track {
     flex-grow: 1;
     height: 8px;
-    background-color: #232b3a;
-    border-radius: 4px;
+    background-color: #252c2f;
+    border-radius: 0px;
     overflow: hidden;
     margin-right: 10px;
 }
 
 .stat-progress-fill {
     height: 100%;
-    border-radius: 4px;
-    background-color: #10b981;
+    border-radius: 0px;
+    background-color: #c91f10;
 }
 
 .stat-progress-num {

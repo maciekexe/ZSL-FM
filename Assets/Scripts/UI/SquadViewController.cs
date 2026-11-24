@@ -10,13 +10,47 @@ namespace ZSLFM.UI
     /// Zgodnie z wytycznymi architektonicznymi projektu (AGENTS.md):
     /// - Odpowiada wyłącznie za warstwę prezentacji (UI) i dziedziczy po MonoBehaviour.
     /// - Nie implementuje logiki biznesowej ani silnika meczowego (te należą do Core).
-    /// - Obsługuje reaktywne wyszukiwanie na żywo, wielokryterialne sortowanie kolumn,
-    ///   interaktywny profil zawodnika (Drawer) oraz składanie ofert transferowych.
+    /// - Obsługuje dynamiczne motywy klubowe (logo, gradient całego tła, akcenty kolorystyczne),
+    ///   wyszukiwanie na żywo, sortowanie kolumn, profil zawodnika oraz oferty transferowe.
     /// </summary>
     [RequireComponent(typeof(UIDocument))]
     public class SquadViewController : MonoBehaviour
     {
         private const double ClubBudget = 150000.0;
+
+        /// <summary>
+        /// Model konfiguracji wizualnej dla wybranego klubu.
+        /// Pozwala automatycznie zmieniać herb, gradient całego ekranu oraz akcenty UI dla każdego klubu.
+        /// </summary>
+        [Serializable]
+        public class ClubThemeDto
+        {
+            public string ClubName { get; }
+            public Color PrimaryGradientColor { get; }
+            public Color SecondaryGradientColor { get; }
+            public Color BaseDarkColor { get; }
+            public Color AccentColor { get; }
+            public Color AccentLightTextColor { get; }
+            public Texture2D LogoTexture { get; }
+
+            public ClubThemeDto(
+                string clubName,
+                Color primaryGradientColor,
+                Color secondaryGradientColor,
+                Color baseDarkColor,
+                Color accentColor,
+                Color accentLightTextColor,
+                Texture2D logoTexture = null)
+            {
+                ClubName = clubName;
+                PrimaryGradientColor = primaryGradientColor;
+                SecondaryGradientColor = secondaryGradientColor;
+                BaseDarkColor = baseDarkColor;
+                AccentColor = accentColor;
+                AccentLightTextColor = accentLightTextColor;
+                LogoTexture = logoTexture;
+            }
+        }
 
         /// <summary>
         /// Model DTO prezentujący pełny profil zawodnika na potrzeby UI.
@@ -75,6 +109,11 @@ namespace ZSLFM.UI
         }
 
         private UIDocument _uiDocument;
+        private VisualElement _rootContainer;
+        private VisualElement _clubLogoElement;
+        private Label _clubTitleLabel;
+        private Label _clubSubtitleLabel;
+        private Label _clubBudgetLabel;
         private Label _sectionTitle;
         private Label _sectionSubtitle;
         private TextField _playerSearchInput;
@@ -87,6 +126,7 @@ namespace ZSLFM.UI
 
         // Boczny panel profilu piłkarza (Drawer)
         private VisualElement _playerDetailsDrawer;
+        private Label _drawerTitle;
         private Label _detailName;
         private Label _detailClub;
         private Label _detailPosBadge;
@@ -101,7 +141,9 @@ namespace ZSLFM.UI
 
         // Przyciski i filtry
         private readonly List<Button> _navButtons = new List<Button>();
+        private Button _activeNavButton;
         private readonly List<Button> _filterButtons = new List<Button>();
+        private Button _activeFilterButton;
         private string _activePositionFilter = "ALL";
         private string _searchQuery = "";
 
@@ -115,11 +157,13 @@ namespace ZSLFM.UI
         private Button _sortSquadName, _sortSquadOverall;
         private Button _sortMarketName, _sortMarketClub, _sortMarketOverall, _sortMarketPrice;
 
-        // Baza danych zawodników dla UI
+        // Baza danych zawodników i motyw dla UI
         private List<PlayerProfileDto> _squadPlayers;
         private List<PlayerProfileDto> _marketPlayers;
         private VisualElement _selectedRowElement;
         private bool _isShowingSquadTab = true;
+        private ClubThemeDto _currentTheme;
+        private Texture2D _runtimeGradientTexture;
 
         private void OnEnable()
         {
@@ -134,19 +178,37 @@ namespace ZSLFM.UI
 
             InitializeElements(root);
             SetupNavigation(root);
-            SetupSearch(root);
+            SetupSearch();
             SetupSorting(root);
             SetupMarketFilters(root);
             SetupDrawer(root);
 
             InitializeData();
 
+            // Zastosowanie domyślnego motywu makiety ZSŁ Gdańsk (kolory pobrane z herbu)
+            ApplyClubTheme(CreateDefaultZslTheme());
+
             RenderSquadList();
             RenderMarketList();
         }
 
+        private void OnDisable()
+        {
+            if (_runtimeGradientTexture != null)
+            {
+                Destroy(_runtimeGradientTexture);
+                _runtimeGradientTexture = null;
+            }
+        }
+
         private void InitializeElements(VisualElement root)
         {
+            _rootContainer = root.Q<VisualElement>("Root");
+            _clubLogoElement = root.Q<VisualElement>("ClubLogo");
+            _clubTitleLabel = root.Q<Label>("ClubTitle");
+            _clubSubtitleLabel = root.Q<Label>("ClubSubtitle");
+            _clubBudgetLabel = root.Q<Label>("ClubBudget");
+
             _sectionTitle = root.Q<Label>("SectionTitle");
             _sectionSubtitle = root.Q<Label>("SectionSubtitle");
             _playerSearchInput = root.Q<TextField>("PlayerSearchInput");
@@ -159,6 +221,7 @@ namespace ZSLFM.UI
 
             // Elementy Drawera profilu
             _playerDetailsDrawer = root.Q<VisualElement>("PlayerDetailsDrawer");
+            _drawerTitle = root.Q<Label>(className: "drawer-title");
             _detailName = root.Q<Label>("DetailPlayerName");
             _detailClub = root.Q<Label>("DetailClubName");
             _detailPosBadge = root.Q<Label>("DetailPosBadge");
@@ -183,6 +246,148 @@ namespace ZSLFM.UI
             _valPhy = root.Q<Label>("ValPhy");
         }
 
+        #region DYNAMICZNY MOTYW KLUBU (LOGO, GRADIENT, AKCENTY)
+
+        private ClubThemeDto CreateDefaultZslTheme()
+        {
+            return new ClubThemeDto(
+                clubName: "ZSŁ Gdańsk",
+                primaryGradientColor: new Color32(118, 22, 14, 255),   // Głęboka czerwień herbu ZSŁ
+                secondaryGradientColor: new Color32(36, 44, 47, 255),  // Grafit lwów z herbu (#3A4548 przyciemniony)
+                baseDarkColor: new Color32(16, 20, 22, 255),           // Ciemny grafit bazowy
+                accentColor: new Color32(201, 31, 16, 255),            // Czerwień akcentowa ZSŁ (#C91F10)
+                accentLightTextColor: new Color32(252, 165, 165, 255)  // Jasnoczerwony odcień tekstu
+            );
+        }
+
+        /// <summary>
+        /// Nakłada kolory, gradient całego tła oraz logo wybranego klubu na interfejs.
+        /// Umożliwia zmianę całej oprawy wizualnej w zależności od prowadzonego klubu.
+        /// </summary>
+        public void ApplyClubTheme(ClubThemeDto theme)
+        {
+            if (theme == null) return;
+            _currentTheme = theme;
+
+            if (_clubTitleLabel != null) _clubTitleLabel.text = theme.ClubName;
+
+            if (_clubLogoElement != null && theme.LogoTexture != null)
+            {
+                _clubLogoElement.style.backgroundImage = new StyleBackground(theme.LogoTexture);
+            }
+
+            // Generowanie płynnego gradientu na całe tło dashboardu z kolorów klubu
+            if (_rootContainer != null)
+            {
+                if (_runtimeGradientTexture != null)
+                {
+                    Destroy(_runtimeGradientTexture);
+                }
+
+                _runtimeGradientTexture = GenerateDiagonalGradientTexture(
+                    theme.PrimaryGradientColor,
+                    theme.SecondaryGradientColor,
+                    theme.BaseDarkColor
+                );
+                _rootContainer.style.backgroundImage = new StyleBackground(_runtimeGradientTexture);
+            }
+
+            // Aktualizacja akcentów tekstowych
+            if (_clubSubtitleLabel != null) _clubSubtitleLabel.style.color = theme.AccentColor;
+            if (_clubBudgetLabel != null) _clubBudgetLabel.style.color = theme.AccentColor;
+            if (_drawerTitle != null) _drawerTitle.style.color = theme.AccentColor;
+            if (_detailValue != null) _detailValue.style.color = theme.AccentLightTextColor;
+
+            ApplyActiveNavThemeStyle();
+            ApplyActiveFilterThemeStyle();
+        }
+
+        private Texture2D GenerateDiagonalGradientTexture(Color topLeft, Color mid, Color bottomRight)
+        {
+            const int size = 128;
+            Texture2D tex = new Texture2D(size, size, TextureFormat.RGBA32, false)
+            {
+                wrapMode = TextureWrapMode.Clamp,
+                filterMode = FilterMode.Bilinear
+            };
+
+            Color[] pixels = new Color[size * size];
+            for (int y = 0; y < size; y++)
+            {
+                // W Unity oś Y tekstury zaczyna się na dole (0 = dół, size-1 = góra)
+                float ny = 1f - (y / (float)(size - 1));
+                for (int x = 0; x < size; x++)
+                {
+                    float nx = x / (float)(size - 1);
+                    float t = Mathf.Clamp01((nx + ny) * 0.5f);
+
+                    Color c = t < 0.38f
+                        ? Color.Lerp(topLeft, mid, t / 0.38f)
+                        : Color.Lerp(mid, bottomRight, (t - 0.38f) / 0.62f);
+
+                    pixels[y * size + x] = c;
+                }
+            }
+
+            tex.SetPixels(pixels);
+            tex.Apply();
+            return tex;
+        }
+
+        private void ApplyActiveNavThemeStyle()
+        {
+            if (_currentTheme == null) return;
+
+            foreach (Button btn in _navButtons)
+            {
+                if (btn == _activeNavButton)
+                {
+                    Color bg = _currentTheme.AccentColor;
+                    bg.a = 0.18f;
+                    btn.style.backgroundColor = bg;
+                    btn.style.color = _currentTheme.AccentLightTextColor;
+                    btn.style.borderLeftColor = _currentTheme.AccentColor;
+                }
+                else
+                {
+                    btn.style.backgroundColor = StyleKeyword.Null;
+                    btn.style.color = StyleKeyword.Null;
+                    btn.style.borderLeftColor = StyleKeyword.Null;
+                }
+            }
+        }
+
+        private void ApplyActiveFilterThemeStyle()
+        {
+            if (_currentTheme == null) return;
+
+            foreach (Button btn in _filterButtons)
+            {
+                if (btn == _activeFilterButton)
+                {
+                    Color bg = _currentTheme.AccentColor;
+                    bg.a = 0.25f;
+                    btn.style.backgroundColor = bg;
+                    btn.style.borderTopColor = _currentTheme.AccentColor;
+                    btn.style.borderBottomColor = _currentTheme.AccentColor;
+                    btn.style.borderLeftColor = _currentTheme.AccentColor;
+                    btn.style.borderRightColor = _currentTheme.AccentColor;
+                    btn.style.color = _currentTheme.AccentLightTextColor;
+                }
+                else
+                {
+                    btn.style.backgroundColor = StyleKeyword.Null;
+                    btn.style.borderTopColor = StyleKeyword.Null;
+                    btn.style.borderBottomColor = StyleKeyword.Null;
+                    btn.style.borderLeftColor = StyleKeyword.Null;
+                    btn.style.borderRightColor = StyleKeyword.Null;
+                    btn.style.color = StyleKeyword.Null;
+                }
+            }
+        }
+
+        #endregion
+
         #region NAWIGACJA I ZAKŁADKI
 
         private void SetupNavigation(VisualElement root)
@@ -197,7 +402,8 @@ namespace ZSLFM.UI
             if (btnSquad != null)
             {
                 _navButtons.Add(btnSquad);
-                btnSquad.clicked += () => SwitchTab(btnSquad, "Kadra Zespołu", "ZSŁ Gdańsk • Pierwszy Skład i Rezerwy", showSquad: true, showMarket: false);
+                _activeNavButton = btnSquad;
+                btnSquad.clicked += () => SwitchTab(btnSquad, "Kadra Zespołu", $"{(_currentTheme != null ? _currentTheme.ClubName : "ZSŁ Gdańsk")} • Pierwszy Skład i Rezerwy", showSquad: true, showMarket: false);
             }
 
             if (btnTransfers != null)
@@ -234,6 +440,8 @@ namespace ZSLFM.UI
                 btn.RemoveFromClassList("nav-button--active");
             }
             clickedButton.AddToClassList("nav-button--active");
+            _activeNavButton = clickedButton;
+            ApplyActiveNavThemeStyle();
 
             if (_sectionTitle != null) _sectionTitle.text = title;
             if (_sectionSubtitle != null) _sectionSubtitle.text = subtitle;
@@ -271,7 +479,7 @@ namespace ZSLFM.UI
 
         #region WYSZUKIWARKA NA ŻYWO (SEARCH)
 
-        private void SetupSearch(VisualElement root)
+        private void SetupSearch()
         {
             if (_playerSearchInput == null) return;
 
@@ -319,10 +527,10 @@ namespace ZSLFM.UI
         private void ToggleSquadSort(SortField field, Button headerBtn, string label)
         {
             if (_squadSort == field) _squadSortAsc = !_squadSortAsc;
-            else { _squadSort = field; _squadSortAsc = false; } // Domyślnie malejąco
+            else { _squadSort = field; _squadSortAsc = false; }
 
             ResetSquadHeaderLabels();
-            headerBtn.text = $"{label} {(_squadSortAsc ? "▲" : "▼")}";
+            headerBtn.text = $"{label} {(_squadSortAsc ? "^" : "v")}";
             headerBtn.AddToClassList("col-header-btn--active");
 
             RenderSquadList();
@@ -331,10 +539,10 @@ namespace ZSLFM.UI
         private void ToggleMarketSort(SortField field, Button headerBtn, string label)
         {
             if (_marketSort == field) _marketSortAsc = !_marketSortAsc;
-            else { _marketSort = field; _marketSortAsc = (field == SortField.Price); } // Cena domyślnie rosnąco
+            else { _marketSort = field; _marketSortAsc = (field == SortField.Price); }
 
             ResetMarketHeaderLabels();
-            headerBtn.text = $"{label} {(_marketSortAsc ? "▲" : "▼")}";
+            headerBtn.text = $"{label} {(_marketSortAsc ? "^" : "v")}";
             headerBtn.AddToClassList("col-header-btn--active");
 
             RenderMarketList();
@@ -342,16 +550,16 @@ namespace ZSLFM.UI
 
         private void ResetSquadHeaderLabels()
         {
-            if (_sortSquadName != null) { _sortSquadName.text = "ZAWODNIK ⬍"; _sortSquadName.RemoveFromClassList("col-header-btn--active"); }
-            if (_sortSquadOverall != null) { _sortSquadOverall.text = "OVERALL ⬍"; _sortSquadOverall.RemoveFromClassList("col-header-btn--active"); }
+            if (_sortSquadName != null) { _sortSquadName.text = "ZAWODNIK <>"; _sortSquadName.RemoveFromClassList("col-header-btn--active"); }
+            if (_sortSquadOverall != null) { _sortSquadOverall.text = "OVERALL <>"; _sortSquadOverall.RemoveFromClassList("col-header-btn--active"); }
         }
 
         private void ResetMarketHeaderLabels()
         {
-            if (_sortMarketName != null) { _sortMarketName.text = "ZAWODNIK ⬍"; _sortMarketName.RemoveFromClassList("col-header-btn--active"); }
-            if (_sortMarketClub != null) { _sortMarketClub.text = "KLUB ⬍"; _sortMarketClub.RemoveFromClassList("col-header-btn--active"); }
-            if (_sortMarketOverall != null) { _sortMarketOverall.text = "OVERALL ⬍"; _sortMarketOverall.RemoveFromClassList("col-header-btn--active"); }
-            if (_sortMarketPrice != null) { _sortMarketPrice.text = "WARTOŚĆ ⬍"; _sortMarketPrice.RemoveFromClassList("col-header-btn--active"); }
+            if (_sortMarketName != null) { _sortMarketName.text = "ZAWODNIK <>"; _sortMarketName.RemoveFromClassList("col-header-btn--active"); }
+            if (_sortMarketClub != null) { _sortMarketClub.text = "KLUB <>"; _sortMarketClub.RemoveFromClassList("col-header-btn--active"); }
+            if (_sortMarketOverall != null) { _sortMarketOverall.text = "OVERALL <>"; _sortMarketOverall.RemoveFromClassList("col-header-btn--active"); }
+            if (_sortMarketPrice != null) { _sortMarketPrice.text = "WARTOŚĆ <>"; _sortMarketPrice.RemoveFromClassList("col-header-btn--active"); }
         }
 
         #endregion
@@ -375,12 +583,23 @@ namespace ZSLFM.UI
         {
             if (_playerDetailsDrawer == null || player == null) return;
 
-            // Zaznaczenie wiersza
             DeselectCurrentRow();
             _selectedRowElement = rowElement;
-            _selectedRowElement?.AddToClassList("player-row--selected");
+            if (_selectedRowElement != null)
+            {
+                _selectedRowElement.AddToClassList("player-row--selected");
+                if (_currentTheme != null)
+                {
+                    Color bg = _currentTheme.AccentColor;
+                    bg.a = 0.14f;
+                    _selectedRowElement.style.backgroundColor = bg;
+                    _selectedRowElement.style.borderLeftColor = _currentTheme.AccentColor;
+                    _selectedRowElement.style.borderTopColor = _currentTheme.AccentColor;
+                    _selectedRowElement.style.borderBottomColor = _currentTheme.AccentColor;
+                    _selectedRowElement.style.borderRightColor = _currentTheme.AccentColor;
+                }
+            }
 
-            // Wypełnienie danych nagłówkowych
             if (_detailName != null) _detailName.text = player.FullName;
             if (_detailClub != null) _detailClub.text = player.ClubName;
             if (_detailPosBadge != null) _detailPosBadge.text = player.Position;
@@ -400,7 +619,6 @@ namespace ZSLFM.UI
                 else _detailOverallBadge.AddToClassList("skill-low");
             }
 
-            // Wypełnienie atrybutów i pasków postępu
             SetStatBar(_barPac, _valPac, player.Pace);
             SetStatBar(_barSho, _valSho, player.Shooting);
             SetStatBar(_barPas, _valPas, player.Passing);
@@ -408,7 +626,6 @@ namespace ZSLFM.UI
             SetStatBar(_barDef, _valDef, player.Defending);
             SetStatBar(_barPhy, _valPhy, player.Physicality);
 
-            // Wyświetlenie panelu
             _playerDetailsDrawer.RemoveFromClassList("hidden");
         }
 
@@ -418,10 +635,9 @@ namespace ZSLFM.UI
             if (bar != null)
             {
                 bar.style.width = new Length(Mathf.Clamp(statValue, 5, 100), LengthUnit.Percent);
-                // Kolor paska
-                if (statValue >= 80) bar.style.backgroundColor = new StyleColor(new Color32(16, 185, 129, 255)); // Zielony
-                else if (statValue >= 65) bar.style.backgroundColor = new StyleColor(new Color32(245, 158, 11, 255)); // Bursztynowy
-                else bar.style.backgroundColor = new StyleColor(new Color32(100, 116, 139, 255)); // Szary
+                if (statValue >= 80) bar.style.backgroundColor = new StyleColor(new Color32(16, 185, 129, 255));
+                else if (statValue >= 65) bar.style.backgroundColor = new StyleColor(new Color32(245, 158, 11, 255));
+                else bar.style.backgroundColor = new StyleColor(new Color32(100, 116, 139, 255));
             }
         }
 
@@ -435,6 +651,11 @@ namespace ZSLFM.UI
             if (_selectedRowElement != null)
             {
                 _selectedRowElement.RemoveFromClassList("player-row--selected");
+                _selectedRowElement.style.backgroundColor = StyleKeyword.Null;
+                _selectedRowElement.style.borderLeftColor = StyleKeyword.Null;
+                _selectedRowElement.style.borderTopColor = StyleKeyword.Null;
+                _selectedRowElement.style.borderBottomColor = StyleKeyword.Null;
+                _selectedRowElement.style.borderRightColor = StyleKeyword.Null;
                 _selectedRowElement = null;
             }
         }
@@ -449,16 +670,13 @@ namespace ZSLFM.UI
 
             _playersContainer.Clear();
 
-            // 1. Filtrowanie po wyszukiwarce
             List<PlayerProfileDto> filtered = _squadPlayers.FindAll(p =>
                 string.IsNullOrEmpty(_searchQuery) ||
                 p.FullName.IndexOf(_searchQuery, StringComparison.OrdinalIgnoreCase) >= 0 ||
                 p.Position.IndexOf(_searchQuery, StringComparison.OrdinalIgnoreCase) >= 0);
 
-            // 2. Sortowanie
             SortList(filtered, _squadSort, _squadSortAsc);
 
-            // 3. Renderowanie wierszy
             foreach (PlayerProfileDto player in filtered)
             {
                 VisualElement row = BuildPlayerRowElement(player);
@@ -488,7 +706,6 @@ namespace ZSLFM.UI
 
             row.Add(skillBadge);
 
-            // Kliknięcie wiersza otwiera szczegółowy profil zawodnika
             row.RegisterCallback<ClickEvent>(evt =>
             {
                 ShowPlayerDetails(player, row);
@@ -505,7 +722,10 @@ namespace ZSLFM.UI
         {
             _filterButtons.Clear();
 
-            BindFilterButton(root.Q<Button>("FilterAll"), "ALL");
+            Button filterAll = root.Q<Button>("FilterAll");
+            _activeFilterButton = filterAll;
+
+            BindFilterButton(filterAll, "ALL");
             BindFilterButton(root.Q<Button>("FilterGK"), "GK");
             BindFilterButton(root.Q<Button>("FilterDEF"), "DEF");
             BindFilterButton(root.Q<Button>("FilterMID"), "MID");
@@ -524,6 +744,8 @@ namespace ZSLFM.UI
                     btn.RemoveFromClassList("filter-btn--active");
                 }
                 button.AddToClassList("filter-btn--active");
+                _activeFilterButton = button;
+                ApplyActiveFilterThemeStyle();
 
                 _activePositionFilter = positionKey;
                 RenderMarketList();
@@ -537,17 +759,14 @@ namespace ZSLFM.UI
 
             _marketPlayersContainer.Clear();
 
-            // 1. Filtrowanie po pozycji i wyszukiwarce
             List<PlayerProfileDto> filtered = _marketPlayers.FindAll(p =>
                 (_activePositionFilter == "ALL" || p.Position.Equals(_activePositionFilter, StringComparison.OrdinalIgnoreCase)) &&
                 (string.IsNullOrEmpty(_searchQuery) ||
                  p.FullName.IndexOf(_searchQuery, StringComparison.OrdinalIgnoreCase) >= 0 ||
                  p.ClubName.IndexOf(_searchQuery, StringComparison.OrdinalIgnoreCase) >= 0));
 
-            // 2. Sortowanie
             SortList(filtered, _marketSort, _marketSortAsc);
 
-            // 3. Renderowanie
             foreach (PlayerProfileDto player in filtered)
             {
                 VisualElement row = BuildMarketPlayerRowElement(player);
@@ -586,13 +805,15 @@ namespace ZSLFM.UI
             Button bidButton = new Button();
             bidButton.text = "Złóż ofertę";
             bidButton.AddToClassList("btn-bid");
+            if (_currentTheme != null)
+            {
+                bidButton.style.backgroundColor = _currentTheme.AccentColor;
+            }
             bidButton.clicked += () => HandleTransferBid(player);
             row.Add(bidButton);
 
-            // Kliknięcie wiersza otwiera szczegółowy profil zawodnika
             row.RegisterCallback<ClickEvent>(evt =>
             {
-                // Unikamy wywoływania profilu przy kliknięciu bezpośrednio w przycisk "Złóż ofertę"
                 if (evt.target == bidButton) return;
                 ShowPlayerDetails(player, row);
             });
@@ -651,7 +872,6 @@ namespace ZSLFM.UI
 
         private void InitializeData()
         {
-            // Kadra ZSŁ Gdańsk z unikalnymi statystykami
             _squadPlayers = new List<PlayerProfileDto>
             {
                 new PlayerProfileDto("Maciej", "Kamiński", "MID", 90, "ZSŁ Gdańsk", 450000.0, 18, 2500.0, 88, 86, 94, 92, 82, 84),
@@ -675,10 +895,8 @@ namespace ZSLFM.UI
                 new PlayerProfileDto("Igor", "Nowicki", "STR", 66, "ZSŁ Gdańsk", 45000.0, 18, 500.0, 72, 68, 60, 65, 36, 67)
             };
 
-            // Rynek transferowy
             _marketPlayers = new List<PlayerProfileDto>
             {
-                // W zasięgu budżetu (<= 150 000 PLN)
                 new PlayerProfileDto("Camilo", "Mena", "MID", 75, "Lechia Gdańsk", 120000.0, 22, 1800.0, 84, 72, 74, 80, 52, 70),
                 new PlayerProfileDto("Maksym", "Khlan", "STR", 74, "Lechia Gdańsk", 95000.0, 21, 1500.0, 82, 75, 70, 78, 45, 68),
                 new PlayerProfileDto("Rifet", "Kapić", "MID", 73, "Lechia Gdańsk", 85000.0, 28, 1400.0, 70, 71, 78, 74, 64, 72),
@@ -691,7 +909,6 @@ namespace ZSLFM.UI
                 new PlayerProfileDto("Martin", "Dobrotka", "DEF", 71, "Arka Gdynia", 65000.0, 39, 1000.0, 60, 45, 68, 60, 75, 74),
                 new PlayerProfileDto("Paweł", "Lenarcik", "GK", 70, "Arka Gdynia", 60000.0, 29, 950.0, 56, 25, 62, 50, 72, 72),
 
-                // Gwiazdy światowe (> 150 000 PLN)
                 new PlayerProfileDto("Lucas", "Beraldo", "DEF", 84, "PSG", 950000.0, 20, 25000.0, 78, 55, 79, 76, 86, 82),
                 new PlayerProfileDto("Bradley", "Barcola", "STR", 86, "PSG", 1900000.0, 21, 45000.0, 92, 82, 80, 89, 44, 74),
                 new PlayerProfileDto("Vitinha", "Silva", "MID", 89, "PSG", 2800000.0, 24, 60000.0, 80, 80, 91, 90, 76, 78),

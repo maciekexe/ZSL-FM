@@ -1,11 +1,16 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/SquadStyle.uss?fileID=7433441132597879392&amp;guid=82497091c13f9064b8917d61566b1938&amp;type=3#SquadStyle"/>
     <ui:VisualElement name="Root" class="root-container">
-        <!-- Górny Pasek Informacyjny (Klub, Budżet, Reputacja) -->
+        <!-- Górny Pasek Informacyjny (Logo Klubu, Nazwa, Budżet, Reputacja) -->
         <ui:VisualElement name="HeaderBar" class="header-bar">
-            <ui:VisualElement class="club-brand">
-                <ui:Label text="ZSŁ Gdańsk" class="club-title"/>
-                <ui:Label text="Football Manager • Panel Menedżera" class="club-subtitle"/>
+            <ui:VisualElement class="club-header-left">
+                <ui:VisualElement name="ClubLogoFrame" class="club-logo-frame">
+                    <ui:VisualElement name="ClubLogo" class="club-logo-image"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="club-brand">
+                    <ui:Label name="ClubTitle" text="ZSŁ Gdańsk" class="club-title"/>
+                    <ui:Label name="ClubSubtitle" text="Football Manager • Panel Menedżera" class="club-subtitle"/>
+                </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement class="header-stats">
                 <ui:VisualElement class="stat-card">
@@ -32,14 +37,17 @@
 
             <!-- Główna Przestrzeń Robocza -->
             <ui:VisualElement name="ContentArea" class="content-area">
-                <!-- Nagłówek Sekcji oraz Pasek Wyszukiwania na Żywo -->
+                <!-- Nagłówek Sekcji oraz Pasek Wyszukiwania z Windowsową Lupą -->
                 <ui:VisualElement class="content-header">
                     <ui:VisualElement class="content-header-top">
                         <ui:VisualElement>
                             <ui:Label name="SectionTitle" text="Kadra Zespołu" class="section-title"/>
                             <ui:Label name="SectionSubtitle" text="ZSŁ Gdańsk • Pierwszy Skład i Rezerwy" class="section-subtitle"/>
                         </ui:VisualElement>
-                        <ui:TextField name="PlayerSearchInput" placeholder-text="🔍 Szukaj zawodnika..." class="search-input"/>
+                        <ui:VisualElement name="SearchBox" class="search-box">
+                            <ui:VisualElement name="SearchIcon" class="search-icon"/>
+                            <ui:TextField name="PlayerSearchInput" placeholder-text="Szukaj zawodnika..." class="search-input"/>
+                        </ui:VisualElement>
                     </ui:VisualElement>
                 </ui:VisualElement>
 
@@ -50,8 +58,8 @@
                         <ui:VisualElement name="SquadContainer" class="tab-container">
                             <ui:VisualElement class="table-header">
                                 <ui:Label text="POZ" class="col-header col-pos"/>
-                                <ui:Button name="SortSquadName" text="ZAWODNIK ⬍" class="col-header-btn col-name"/>
-                                <ui:Button name="SortSquadOverall" text="OVERALL ⬍" class="col-header-btn col-skill"/>
+                                <ui:Button name="SortSquadName" text="ZAWODNIK &lt;&gt;" class="col-header-btn col-name"/>
+                                <ui:Button name="SortSquadOverall" text="OVERALL &lt;&gt;" class="col-header-btn col-skill"/>
                             </ui:VisualElement>
                             <ui:ScrollView name="PlayersContainer" class="players-container"/>
                         </ui:VisualElement>
@@ -68,10 +76,10 @@
                             </ui:VisualElement>
                             <ui:VisualElement class="table-header">
                                 <ui:Label text="POZ" class="col-header col-market-pos"/>
-                                <ui:Button name="SortMarketName" text="ZAWODNIK ⬍" class="col-header-btn col-market-name"/>
-                                <ui:Button name="SortMarketClub" text="KLUB ⬍" class="col-header-btn col-market-club"/>
-                                <ui:Button name="SortMarketOverall" text="OVERALL ⬍" class="col-header-btn col-market-skill"/>
-                                <ui:Button name="SortMarketPrice" text="WARTOŚĆ ⬍" class="col-header-btn col-market-price"/>
+                                <ui:Button name="SortMarketName" text="ZAWODNIK &lt;&gt;" class="col-header-btn col-market-name"/>
+                                <ui:Button name="SortMarketClub" text="KLUB &lt;&gt;" class="col-header-btn col-market-club"/>
+                                <ui:Button name="SortMarketOverall" text="OVERALL &lt;&gt;" class="col-header-btn col-market-skill"/>
+                                <ui:Button name="SortMarketPrice" text="WARTOŚĆ &lt;&gt;" class="col-header-btn col-market-price"/>
                                 <ui:Label text="AKCJA" class="col-header col-market-action"/>
                             </ui:VisualElement>
                             <ui:ScrollView name="MarketPlayersContainer" class="players-container"/>
@@ -82,7 +90,7 @@
                     <ui:VisualElement name="PlayerDetailsDrawer" class="player-details-drawer hidden">
                         <ui:VisualElement class="drawer-header">
                             <ui:Label text="PROFIL ZAWODNIKA" class="drawer-title"/>
-                            <ui:Button name="BtnCloseDetails" text="✕" class="drawer-close-btn"/>
+                            <ui:Button name="BtnCloseDetails" text="X" class="drawer-close-btn"/>
                         </ui:VisualElement>
 
                         <ui:VisualElement class="drawer-profile-card">
@@ -114,7 +122,6 @@
                         <ui:VisualElement class="drawer-stats-section">
                             <ui:Label text="ATRYBUTY PIŁKARSKIE" class="drawer-section-heading"/>
 
-                            <!-- PAC -->
                             <ui:VisualElement class="stat-progress-row">
                                 <ui:Label text="TEMPO (PAC)" class="stat-progress-name"/>
                                 <ui:VisualElement class="stat-progress-track">
@@ -123,7 +130,6 @@
                                 <ui:Label name="ValPac" text="88" class="stat-progress-num"/>
                             </ui:VisualElement>
 
-                            <!-- SHO -->
                             <ui:VisualElement class="stat-progress-row">
                                 <ui:Label text="STRZAŁY (SHO)" class="stat-progress-name"/>
                                 <ui:VisualElement class="stat-progress-track">
@@ -132,7 +138,6 @@
                                 <ui:Label name="ValSho" text="86" class="stat-progress-num"/>
                             </ui:VisualElement>
 
-                            <!-- PAS -->
                             <ui:VisualElement class="stat-progress-row">
                                 <ui:Label text="PODANIA (PAS)" class="stat-progress-name"/>
                                 <ui:VisualElement class="stat-progress-track">
@@ -141,7 +146,6 @@
                                 <ui:Label name="ValPas" text="94" class="stat-progress-num"/>
                             </ui:VisualElement>
 
-                            <!-- DRI -->
                             <ui:VisualElement class="stat-progress-row">
                                 <ui:Label text="DRYBLING (DRI)" class="stat-progress-name"/>
                                 <ui:VisualElement class="stat-progress-track">
@@ -150,7 +154,6 @@
                                 <ui:Label name="ValDri" text="92" class="stat-progress-num"/>
                             </ui:VisualElement>
 
-                            <!-- DEF -->
                             <ui:VisualElement class="stat-progress-row">
                                 <ui:Label text="OBRONA (DEF)" class="stat-progress-name"/>
                                 <ui:VisualElement class="stat-progress-track">
@@ -159,7 +162,6 @@
                                 <ui:Label name="ValDef" text="82" class="stat-progress-num"/>
                             </ui:VisualElement>
 
-                            <!-- PHY -->
                             <ui:VisualElement class="stat-progress-row">
                                 <ui:Label text="FIZYKA (PHY)" class="stat-progress-name"/>
                                 <ui:VisualElement class="stat-progress-track">
