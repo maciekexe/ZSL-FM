@@ -14,6 +14,9 @@ namespace ZSLFM.UI
     public class SquadViewController : MonoBehaviour
     {
         private UIDocument _uiDocument;
+        private VisualElement _clubLogoElement;
+        private Label _clubBudgetLabel;
+        private Label _clubReputationLabel;
         private Label _sectionTitle;
         private Label _sectionSubtitle;
         private TextField _playerSearchInput;
@@ -28,6 +31,7 @@ namespace ZSLFM.UI
 
         private List<PlayerProfileDto> _squadPlayers;
         private List<PlayerProfileDto> _marketPlayers;
+        private double _activeClubBudget = UiSampleSquadDataProvider.DefaultClubBudget;
         private string _searchQuery = string.Empty;
         private bool _isShowingSquadTab = true;
 
@@ -48,7 +52,7 @@ namespace ZSLFM.UI
             _squadPlayers = UiSampleSquadDataProvider.CreateSampleSquadPlayers();
             _marketPlayers = UiSampleSquadDataProvider.CreateSampleMarketPlayers();
 
-            ApplyClubTheme(ClubThemeApplier.CreateDefaultZslTheme());
+            ApplyInitialClubSession();
             RenderSquadList();
             RenderMarketList();
         }
@@ -81,8 +85,35 @@ namespace ZSLFM.UI
             _transferMarketView?.Render(_marketPlayers, _searchQuery);
         }
 
+        private void ApplyInitialClubSession()
+        {
+            ClubSetupSelection selection = ClubSessionState.ActiveSelection;
+            if (selection == null)
+            {
+                _activeClubBudget = UiSampleSquadDataProvider.DefaultClubBudget;
+                ApplyClubTheme(ClubThemeApplier.CreateDefaultZslTheme());
+                return;
+            }
+
+            _activeClubBudget = selection.Budget;
+            if (_clubBudgetLabel != null) _clubBudgetLabel.text = $"{selection.Budget:N0} PLN";
+            if (_clubReputationLabel != null) _clubReputationLabel.text = selection.Reputation.ToString();
+            if (_sectionSubtitle != null) _sectionSubtitle.text = $"{selection.ClubName} • Pierwszy Skład i Rezerwy";
+
+            ApplyClubTheme(ClubThemeMapper.ToClubThemeDto(selection));
+            if (_clubLogoElement != null && !selection.UsesDefaultZslLogo)
+            {
+                _clubLogoElement.style.width = 44;
+                _clubLogoElement.style.height = 44;
+            }
+            ClubCrestRenderer.Render(_clubLogoElement, selection);
+        }
+
         private void InitializeComponents(VisualElement root)
         {
+            _clubLogoElement = root.Q<VisualElement>("ClubLogo");
+            _clubBudgetLabel = root.Q<Label>("ClubBudget");
+            _clubReputationLabel = root.Q<Label>("ClubReputation");
             _sectionTitle = root.Q<Label>("SectionTitle");
             _sectionSubtitle = root.Q<Label>("SectionSubtitle");
             _playerSearchInput = root.Q<TextField>("PlayerSearchInput");
@@ -193,7 +224,7 @@ namespace ZSLFM.UI
         {
             TransferBidPreviewResult preview = TransferBidPreviewEvaluator.Evaluate(
                 player,
-                UiSampleSquadDataProvider.DefaultClubBudget);
+                _activeClubBudget);
 
             if (preview.IsAffordable)
             {

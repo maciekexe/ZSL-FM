@@ -1,0 +1,158 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="MainMenuStyle.uss"/>
+    <ui:VisualElement name="Root" class="root-container">
+        <ui:VisualElement class="menu-shell">
+            <!-- LEWY PANEL NAWIGACJI MENU GŁÓWNEGO -->
+            <ui:VisualElement class="menu-sidebar">
+                <ui:VisualElement class="brand-box">
+                    <ui:VisualElement class="brand-logo-frame">
+                        <ui:VisualElement name="MenuBrandLogo" class="brand-logo-image"/>
+                    </ui:VisualElement>
+                    <ui:Label text="ŁĄCZNOŚĆ FM" class="brand-title"/>
+                    <ui:Label text="SYMULATOR MENEDŻERA PIŁKARSKIEGO" class="brand-subtitle"/>
+                </ui:VisualElement>
+
+                <ui:VisualElement class="menu-nav">
+                    <ui:Button name="BtnNavNewCareer" text="Nowa Kariera" class="menu-btn menu-btn--active"/>
+                    <ui:Button name="BtnNavContinue" text="Kontynuuj Karierę" class="menu-btn"/>
+                    <ui:Button name="BtnNavSettings" text="Ustawienia" class="menu-btn"/>
+                    <ui:Button name="BtnNavQuit" text="Wyjdź z Gry" class="menu-btn menu-btn--danger"/>
+                </ui:VisualElement>
+
+                <ui:VisualElement class="sidebar-footer">
+                    <ui:Label name="MenuStatusLabel" text="Tryb Menedżera • Sezon 2026/27" class="footer-note"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <!-- PRAWA PRZESTRZEŃ ROBOCZA -->
+            <ui:VisualElement class="menu-content">
+                <!-- PANEL 1: NOWA KARIERA (WYBÓR KLUBU LUB KREATOR WŁASNEGO KLUBU) -->
+                <ui:VisualElement name="NewCareerPanel" class="workspace-panel">
+                    <ui:VisualElement class="panel-header">
+                        <ui:VisualElement>
+                            <ui:Label text="NOWA KARIERA" class="panel-title"/>
+                            <ui:Label text="Przejmij gotowy klub albo stwórz własny projekt od zera" class="panel-subtitle"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="mode-switcher">
+                            <ui:Button name="BtnModeExisting" text="Wybierz Klub" class="mode-tab mode-tab--active"/>
+                            <ui:Button name="BtnModeCustom" text="Stwórz Własny Klub" class="mode-tab"/>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="career-grid">
+                        <!-- LEWA KOLUMNA KONFIGURACJI -->
+                        <ui:VisualElement class="config-column">
+                            <!-- TRYB A: ISTNIEJĄCE KLUBY -->
+                            <ui:VisualElement name="ExistingClubSection" class="config-section">
+                                <ui:Label text="DOSTĘPNE KLUBY" class="section-heading"/>
+                                <ui:ScrollView name="ExistingClubsList" class="clubs-scroll"/>
+                            </ui:VisualElement>
+
+                            <!-- TRYB B: KREATOR WŁASNEGO KLUBU -->
+                            <ui:VisualElement name="CustomClubSection" class="config-section hidden">
+                                <ui:ScrollView class="creator-scroll">
+                                    <ui:Label text="NAZWA I MONOGRAM HERBU" class="section-heading"/>
+                                    <ui:VisualElement class="form-row">
+                                        <ui:VisualElement class="form-field-grow">
+                                            <ui:Label text="Nazwa klubu" class="field-label"/>
+                                            <ui:TextField name="InputClubName" value="FC Łączność" class="text-input"/>
+                                        </ui:VisualElement>
+                                        <ui:VisualElement class="form-field-short">
+                                            <ui:Label text="Skrót (1-3)" class="field-label"/>
+                                            <ui:TextField name="InputClubMonogram" value="FCŁ" max-length="3" class="text-input"/>
+                                        </ui:VisualElement>
+                                    </ui:VisualElement>
+
+                                    <ui:Label text="BARWY KLUBU" class="section-heading section-heading--spaced"/>
+                                    <ui:VisualElement name="PaletteContainer" class="chip-grid"/>
+
+                                    <ui:Label text="KSZTAŁT HERBU" class="section-heading section-heading--spaced"/>
+                                    <ui:VisualElement class="chip-grid">
+                                        <ui:Button name="BtnShapeShield" text="Tarcza" class="chip-btn chip-btn--active"/>
+                                        <ui:Button name="BtnShapeRounded" text="Kwadrat" class="chip-btn"/>
+                                        <ui:Button name="BtnShapeCircle" text="Koło" class="chip-btn"/>
+                                        <ui:Button name="BtnShapeSharp" text="Ostra" class="chip-btn"/>
+                                    </ui:VisualElement>
+
+                                    <ui:Label text="WZÓR HERBU" class="section-heading section-heading--spaced"/>
+                                    <ui:VisualElement class="chip-grid">
+                                        <ui:Button name="BtnPatternSolid" text="Jednolity" class="chip-btn"/>
+                                        <ui:Button name="BtnPatternSplit" text="Pół na pół" class="chip-btn chip-btn--active"/>
+                                        <ui:Button name="BtnPatternBand" text="Pas poziomy" class="chip-btn"/>
+                                        <ui:Button name="BtnPatternDiagonal" text="Szarfa" class="chip-btn"/>
+                                    </ui:VisualElement>
+
+                                    <ui:Label text="BUDŻET STARTOWY (SPONSOR)" class="section-heading section-heading--spaced"/>
+                                    <ui:VisualElement name="BudgetTiersContainer" class="tiers-list"/>
+
+                                    <ui:Label name="CreatorErrorLabel" text="" class="error-banner hidden"/>
+                                </ui:ScrollView>
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+
+                        <!-- PRAWA KOLUMNA: PODGLĄD KLUBU NA ŻYWO -->
+                        <ui:VisualElement class="preview-column">
+                            <ui:Label text="PODGLĄD KLUBU" class="section-heading"/>
+                            <ui:VisualElement class="preview-card">
+                                <ui:VisualElement class="preview-crest-wrapper">
+                                    <ui:VisualElement name="PreviewCrest" class="preview-crest"/>
+                                </ui:VisualElement>
+                                <ui:Label name="PreviewClubName" text="ZSŁ Gdańsk" class="preview-club-name"/>
+                                <ui:Label name="PreviewClubType" text="Istniejący Klub" class="preview-club-type"/>
+
+                                <ui:VisualElement class="preview-stats-row">
+                                    <ui:VisualElement class="stat-card">
+                                        <ui:Label text="BUDŻET KLUBU" class="stat-label"/>
+                                        <ui:Label name="PreviewBudget" text="150 000 PLN" class="stat-value text-accent"/>
+                                    </ui:VisualElement>
+                                    <ui:VisualElement class="stat-card">
+                                        <ui:Label text="REPUTACJA" class="stat-label"/>
+                                        <ui:Label name="PreviewReputation" text="50" class="stat-value"/>
+                                    </ui:VisualElement>
+                                </ui:VisualElement>
+
+                                <ui:Label name="PreviewDescription" text="Szkolna duma z Gdańska. Młoda kadra z dużym potencjałem." class="preview-description"/>
+                            </ui:VisualElement>
+
+                            <ui:Button name="BtnStartCareer" text="ROZPOCZNIJ KARIERĘ" class="cta-btn"/>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <!-- PANEL 2: USTAWIENIA (MAKIETA UI) -->
+                <ui:VisualElement name="SettingsPanel" class="workspace-panel hidden">
+                    <ui:VisualElement class="panel-header">
+                        <ui:VisualElement>
+                            <ui:Label text="USTAWIENIA" class="panel-title"/>
+                            <ui:Label text="Konfiguracja interfejsu i symulacji (makieta)" class="panel-subtitle"/>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="settings-card">
+                        <ui:VisualElement class="setting-row">
+                            <ui:VisualElement>
+                                <ui:Label text="Waluta gry" class="setting-title"/>
+                                <ui:Label text="Domyślna jednostka budżetu i wartości rynkowej" class="setting-desc"/>
+                            </ui:VisualElement>
+                            <ui:Label text="PLN (Złoty)" class="setting-pill"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="setting-row">
+                            <ui:VisualElement>
+                                <ui:Label text="Prędkość symulacji 2D" class="setting-title"/>
+                                <ui:Label text="Tempo odtwarzania spotkań na boisku 2D" class="setting-desc"/>
+                            </ui:VisualElement>
+                            <ui:Label text="Standard (1x)" class="setting-pill"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="setting-row">
+                            <ui:VisualElement>
+                                <ui:Label text="Zapis automatyczny" class="setting-title"/>
+                                <ui:Label text="Integracja po ukończeniu modułu zapisu gry (H-10)" class="setting-desc"/>
+                            </ui:VisualElement>
+                            <ui:Label text="Wkrótce" class="setting-pill"/>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
