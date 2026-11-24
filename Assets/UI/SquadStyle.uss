@@ -23,7 +23,7 @@
 
 /* ---------------- GÓRNY PASEK (HEADER BAR) ---------------- */
 .header-bar {
-    height: 76px;
+    height: 124px;
     background-color: rgba(16, 20, 22, 0.55);
     border-bottom-width: 1px;
     border-bottom-color: rgba(255, 255, 255, 0.08);
@@ -84,28 +84,30 @@
 }
 
 .stat-card {
+    width: 108px;
+    height: 108px;
     background-color: rgba(22, 27, 30, 0.82);
-    padding-top: 6px;
-    padding-bottom: 6px;
-    padding-left: 14px;
-    padding-right: 14px;
-    border-radius: 0px;
+    padding: 8px;
+    border-radius: 16px;
     border-width: 1px;
-    border-color: rgba(255, 255, 255, 0.1);
-    margin-left: 12px;
-    min-width: 115px;
+    border-color: rgba(255, 255, 255, 0.12);
+    margin-left: 14px;
+    justify-content: center;
+    align-items: center;
 }
 
 .stat-label {
     font-size: 10px;
     color: #94a3b8;
     -unity-font-style: bold;
-    margin-bottom: 2px;
+    -unity-text-align: middle-center;
+    margin-bottom: 6px;
 }
 
 .stat-value {
-    font-size: 15px;
+    font-size: 14px;
     -unity-font-style: bold;
+    -unity-text-align: middle-center;
     color: #f1f5f9;
 }
 
