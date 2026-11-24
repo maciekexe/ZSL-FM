@@ -63,8 +63,34 @@
                                         </ui:VisualElement>
                                     </ui:VisualElement>
 
-                                    <ui:Label text="BARWY KLUBU" class="section-heading section-heading--spaced"/>
-                                    <ui:VisualElement name="PaletteContainer" class="chip-grid"/>
+                                    <ui:Label text="BARWY KLUBU (PALETA KOLORÓW)" class="section-heading section-heading--spaced"/>
+                                    <ui:VisualElement class="color-slot-row">
+                                        <ui:Button name="BtnSelectPrimaryColor" class="color-slot-btn color-slot-btn--active">
+                                            <ui:VisualElement name="SwatchPrimaryColor" class="color-slot-swatch"/>
+                                            <ui:VisualElement class="color-slot-texts">
+                                                <ui:Label text="Kolor Główny" class="color-slot-title"/>
+                                                <ui:Label name="HexPrimaryColor" text="#76160E" class="color-slot-hex"/>
+                                            </ui:VisualElement>
+                                        </ui:Button>
+                                        <ui:Button name="BtnSelectAccentColor" class="color-slot-btn">
+                                            <ui:VisualElement name="SwatchAccentColor" class="color-slot-swatch"/>
+                                            <ui:VisualElement class="color-slot-texts">
+                                                <ui:Label text="Kolor Akcentu" class="color-slot-title"/>
+                                                <ui:Label name="HexAccentColor" text="#C91F10" class="color-slot-hex"/>
+                                            </ui:VisualElement>
+                                        </ui:Button>
+                                        <ui:Button name="BtnSwapColors" text="Zamień" class="color-swap-btn"/>
+                                    </ui:VisualElement>
+
+                                    <ui:VisualElement class="color-picker-panel">
+                                        <ui:VisualElement name="SvPickerBox" class="sv-picker-box">
+                                            <ui:VisualElement name="SvCursor" class="sv-cursor"/>
+                                        </ui:VisualElement>
+                                        <ui:VisualElement name="HuePickerBar" class="hue-picker-bar">
+                                            <ui:VisualElement name="HueCursor" class="hue-cursor"/>
+                                        </ui:VisualElement>
+                                        <ui:VisualElement name="QuickSwatchesGrid" class="quick-swatches-grid"/>
+                                    </ui:VisualElement>
 
                                     <ui:Label text="KSZTAŁT HERBU" class="section-heading section-heading--spaced"/>
                                     <ui:VisualElement class="chip-grid">

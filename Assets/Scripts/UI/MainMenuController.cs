@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,7 +7,7 @@ namespace ZSLFM.UI
 {
     /// <summary>
     /// Pasywny kontroler Menu Głównego i Kreatora Klubu (M-4 / M-5).
-    /// Obsługuje nawigację, wybór gotowego klubu, kreator własnego klubu z podglądem na żywo
+    /// Obsługuje nawigację, wybór gotowego klubu, kreator własnego klubu z paletą HSV na żywo
     /// oraz przejście do sceny Dashboardu (SampleScene).
     /// </summary>
     [RequireComponent(typeof(UIDocument))]
@@ -18,6 +17,7 @@ namespace ZSLFM.UI
 
         private UIDocument _uiDocument;
         private ClubThemeApplier _themeApplier;
+        private HsvColorPickerView _colorPicker;
 
         // Nawigacja główna
         private Button _btnNavNewCareer;
@@ -37,15 +37,23 @@ namespace ZSLFM.UI
         private ScrollView _existingClubsList;
         private TextField _inputClubName;
         private TextField _inputClubMonogram;
-        private VisualElement _paletteContainer;
         private VisualElement _budgetTiersContainer;
         private Label _creatorErrorLabel;
+
+        // Paleta kolorów (Wariant B)
+        private Button _btnSelectPrimaryColor;
+        private Button _btnSelectAccentColor;
+        private Button _btnSwapColors;
+        private VisualElement _swatchPrimaryColor;
+        private VisualElement _swatchAccentColor;
+        private Label _hexPrimaryColor;
+        private Label _hexAccentColor;
+        private VisualElement _quickSwatchesGrid;
 
         // Przyciski kształtu i wzoru herbu
         private readonly Dictionary<CrestShape, Button> _shapeButtons = new Dictionary<CrestShape, Button>();
         private readonly Dictionary<CrestPattern, Button> _patternButtons = new Dictionary<CrestPattern, Button>();
         private readonly List<VisualElement> _existingClubCards = new List<VisualElement>();
-        private readonly List<Button> _paletteButtons = new List<Button>();
         private readonly List<VisualElement> _tierCards = new List<VisualElement>();
 
         // Podgląd na żywo (prawa kolumna)
@@ -59,6 +67,9 @@ namespace ZSLFM.UI
 
         // Bieżący wybór UI
         private bool _isCustomMode;
+        private bool _isEditingAccentColor;
+        private RgbColor _primaryColor = new RgbColor(118, 22, 14);
+        private RgbColor _accentColor = new RgbColor(201, 31, 16);
         private ExistingClubPreset _selectedExistingPreset;
         private ClubColorPalette _selectedPalette;
         private CrestShape _selectedShape = CrestShape.Shield;
@@ -76,9 +87,11 @@ namespace ZSLFM.UI
 
             VisualElement root = _uiDocument.rootVisualElement;
             _themeApplier = new ClubThemeApplier(root);
+            _colorPicker = new HsvColorPickerView(root);
+            _colorPicker.ColorChanged += OnPickerColorChanged;
 
             _selectedExistingPreset = ClubCreatorCatalog.ExistingClubs[0];
-            _selectedPalette = ClubCreatorCatalog.Palettes[0];
+            _selectedPalette = ClubPaletteBuilder.BuildCustomPalette(_primaryColor, _accentColor);
             _selectedBudgetTier = ClubCreatorCatalog.BudgetTiers[0];
 
             InitializeElements(root);
@@ -86,7 +99,7 @@ namespace ZSLFM.UI
             SetupModeSwitcher();
             BuildExistingClubsList();
             SetupCustomCreatorInputs();
-            BuildPaletteButtons();
+            SetupColorPickerControls();
             SetupShapeAndPatternButtons();
             BuildBudgetTiers();
 
@@ -95,12 +108,21 @@ namespace ZSLFM.UI
                 _btnStartCareer.clicked += HandleStartCareer;
             }
 
+            RefreshColorSlotsUi();
+            _colorPicker.SetColor(_primaryColor, notify: false);
             RefreshContinueButtonState();
             RefreshPreview();
         }
 
         private void OnDisable()
         {
+            if (_colorPicker != null)
+            {
+                _colorPicker.ColorChanged -= OnPickerColorChanged;
+                _colorPicker.Dispose();
+                _colorPicker = null;
+            }
+
             _themeApplier?.Dispose();
             _themeApplier = null;
         }
@@ -122,9 +144,17 @@ namespace ZSLFM.UI
             _existingClubsList = root.Q<ScrollView>("ExistingClubsList");
             _inputClubName = root.Q<TextField>("InputClubName");
             _inputClubMonogram = root.Q<TextField>("InputClubMonogram");
-            _paletteContainer = root.Q<VisualElement>("PaletteContainer");
             _budgetTiersContainer = root.Q<VisualElement>("BudgetTiersContainer");
             _creatorErrorLabel = root.Q<Label>("CreatorErrorLabel");
+
+            _btnSelectPrimaryColor = root.Q<Button>("BtnSelectPrimaryColor");
+            _btnSelectAccentColor = root.Q<Button>("BtnSelectAccentColor");
+            _btnSwapColors = root.Q<Button>("BtnSwapColors");
+            _swatchPrimaryColor = root.Q<VisualElement>("SwatchPrimaryColor");
+            _swatchAccentColor = root.Q<VisualElement>("SwatchAccentColor");
+            _hexPrimaryColor = root.Q<Label>("HexPrimaryColor");
+            _hexAccentColor = root.Q<Label>("HexAccentColor");
+            _quickSwatchesGrid = root.Q<VisualElement>("QuickSwatchesGrid");
 
             _shapeButtons.Clear();
             RegisterShapeButton(root.Q<Button>("BtnShapeShield"), CrestShape.Shield);
@@ -338,29 +368,92 @@ namespace ZSLFM.UI
             }
         }
 
-        private void BuildPaletteButtons()
+        private void SetupColorPickerControls()
         {
-            if (_paletteContainer == null) return;
-            _paletteContainer.Clear();
-            _paletteButtons.Clear();
-
-            foreach (ClubColorPalette palette in ClubCreatorCatalog.Palettes)
+            if (_btnSelectPrimaryColor != null)
             {
-                Button btn = new Button { text = palette.DisplayName };
-                btn.AddToClassList("chip-btn");
-                if (palette == _selectedPalette) btn.AddToClassList("chip-btn--active");
+                _btnSelectPrimaryColor.clicked += () => SelectColorSlot(editAccent: false);
+            }
 
-                btn.clicked += () =>
+            if (_btnSelectAccentColor != null)
+            {
+                _btnSelectAccentColor.clicked += () => SelectColorSlot(editAccent: true);
+            }
+
+            if (_btnSwapColors != null)
+            {
+                _btnSwapColors.clicked += () =>
                 {
-                    _selectedPalette = palette;
-                    foreach (Button b in _paletteButtons) b.RemoveFromClassList("chip-btn--active");
-                    btn.AddToClassList("chip-btn--active");
+                    RgbColor prevPrimary = _primaryColor;
+                    _primaryColor = _accentColor;
+                    _accentColor = prevPrimary;
+                    _selectedPalette = ClubPaletteBuilder.BuildCustomPalette(_primaryColor, _accentColor);
+
+                    RefreshColorSlotsUi();
+                    _colorPicker?.SetColor(_isEditingAccentColor ? _accentColor : _primaryColor, notify: false);
                     RefreshPreview();
                 };
-
-                _paletteButtons.Add(btn);
-                _paletteContainer.Add(btn);
             }
+
+            if (_quickSwatchesGrid != null)
+            {
+                _quickSwatchesGrid.Clear();
+                foreach (RgbColor swatch in ClubPaletteBuilder.QuickSwatches)
+                {
+                    Button btn = new Button();
+                    btn.AddToClassList("quick-swatch-btn");
+                    btn.style.backgroundColor = ClubThemeMapper.ToUnityColor(swatch);
+                    btn.clicked += () => _colorPicker?.SetColor(swatch, notify: true);
+                    _quickSwatchesGrid.Add(btn);
+                }
+            }
+        }
+
+        private void SelectColorSlot(bool editAccent)
+        {
+            _isEditingAccentColor = editAccent;
+
+            if (_btnSelectPrimaryColor != null && _btnSelectAccentColor != null)
+            {
+                if (editAccent)
+                {
+                    _btnSelectAccentColor.AddToClassList("color-slot-btn--active");
+                    _btnSelectPrimaryColor.RemoveFromClassList("color-slot-btn--active");
+                }
+                else
+                {
+                    _btnSelectPrimaryColor.AddToClassList("color-slot-btn--active");
+                    _btnSelectAccentColor.RemoveFromClassList("color-slot-btn--active");
+                }
+            }
+
+            _colorPicker?.SetColor(editAccent ? _accentColor : _primaryColor, notify: false);
+        }
+
+        private void OnPickerColorChanged(RgbColor newColor)
+        {
+            if (_isEditingAccentColor) _accentColor = newColor;
+            else _primaryColor = newColor;
+
+            _selectedPalette = ClubPaletteBuilder.BuildCustomPalette(_primaryColor, _accentColor);
+            RefreshColorSlotsUi();
+            RefreshPreview();
+        }
+
+        private void RefreshColorSlotsUi()
+        {
+            if (_swatchPrimaryColor != null)
+            {
+                _swatchPrimaryColor.style.backgroundColor = ClubThemeMapper.ToUnityColor(_primaryColor);
+            }
+
+            if (_swatchAccentColor != null)
+            {
+                _swatchAccentColor.style.backgroundColor = ClubThemeMapper.ToUnityColor(_accentColor);
+            }
+
+            if (_hexPrimaryColor != null) _hexPrimaryColor.text = ClubPaletteBuilder.ToHex(_primaryColor);
+            if (_hexAccentColor != null) _hexAccentColor.text = ClubPaletteBuilder.ToHex(_accentColor);
         }
 
         private void SetupShapeAndPatternButtons()
@@ -541,7 +634,7 @@ namespace ZSLFM.UI
         {
             if (!Application.CanStreamedLevelBeLoaded(dashboardSceneName))
             {
-                ShowCreatorError($"Scena '{dashboardSceneName}' nie jest dodana w File -> Build Settings.");
+                ShowCreatorError($"Scena '{dashboardSceneName}' nie jest dodana w File -> Build Profiles.");
                 return;
             }
 
