@@ -1,28 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ui:UXML
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ui="UnityEngine.UIElements"
-    xmlns:uie="UnityEditor.UIElements"
-    xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
->
-    <!-- Podpięcie arkusza stylów USS -->
-    <ui:Style src="SquadStyle.uss" />
-
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/SquadStyle.uss?fileID=7433441132597879392&amp;guid=82497091c13f9064b8917d61566b1938&amp;type=3#SquadStyle"/>
     <ui:VisualElement name="Root" class="root-container">
         <!-- Górny Pasek Informacyjny (Klub, Budżet, Reputacja) -->
         <ui:VisualElement name="HeaderBar" class="header-bar">
             <ui:VisualElement class="club-brand">
-                <ui:Label text="ZSŁ Gdańsk" class="club-title" />
-                <ui:Label text="Football Manager • Panel Menedżera" class="club-subtitle" />
+                <ui:Label text="ZSŁ Gdańsk" class="club-title"/>
+                <ui:Label text="Football Manager • Panel Menedżera" class="club-subtitle"/>
             </ui:VisualElement>
             <ui:VisualElement class="header-stats">
                 <ui:VisualElement class="stat-card">
-                    <ui:Label text="BUDŻET KLUBU" class="stat-label" />
-                    <ui:Label name="ClubBudget" text="150 000 PLN" class="stat-value text-accent" />
+                    <ui:Label text="BUDŻET KLUBU" class="stat-label"/>
+                    <ui:Label name="ClubBudget" text="150 000 PLN" class="stat-value text-accent"/>
                 </ui:VisualElement>
                 <ui:VisualElement class="stat-card">
-                    <ui:Label text="REPUTACJA" class="stat-label" />
-                    <ui:Label name="ClubReputation" text="50" class="stat-value" />
+                    <ui:Label text="REPUTACJA" class="stat-label"/>
+                    <ui:Label name="ClubReputation" text="50" class="stat-value"/>
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
@@ -31,57 +23,152 @@
         <ui:VisualElement name="MainContainer" class="main-container">
             <!-- Panel Boczny z Nawigacją -->
             <ui:VisualElement name="Sidebar" class="sidebar">
-                <ui:Label text="MENU GŁÓWNE" class="sidebar-heading" />
-                <ui:Button name="BtnSquad" text=" Kadra" class="nav-button nav-button--active" />
-                <ui:Button name="BtnTactics" text=" Taktyka" class="nav-button" />
-                <ui:Button name="BtnTransfers" text=" Transfery" class="nav-button" />
-                <ui:Button name="BtnFinances" text=" Finanse" class="nav-button" />
+                <ui:Label text="MENU GŁÓWNE" class="sidebar-heading"/>
+                <ui:Button name="BtnSquad" text=" Kadra" class="nav-button nav-button--active"/>
+                <ui:Button name="BtnTactics" text=" Taktyka" class="nav-button"/>
+                <ui:Button name="BtnTransfers" text=" Transfery" class="nav-button"/>
+                <ui:Button name="BtnFinances" text=" Finanse" class="nav-button"/>
             </ui:VisualElement>
 
             <!-- Główna Przestrzeń Robocza -->
             <ui:VisualElement name="ContentArea" class="content-area">
+                <!-- Nagłówek Sekcji oraz Pasek Wyszukiwania na Żywo -->
                 <ui:VisualElement class="content-header">
-                    <ui:Label name="SectionTitle" text="Kadra Zespołu" class="section-title" />
-                    <ui:Label name="SectionSubtitle" text="ZSŁ Gdańsk • Pierwszy Skład i Rezerwy" class="section-subtitle" />
+                    <ui:VisualElement class="content-header-top">
+                        <ui:VisualElement>
+                            <ui:Label name="SectionTitle" text="Kadra Zespołu" class="section-title"/>
+                            <ui:Label name="SectionSubtitle" text="ZSŁ Gdańsk • Pierwszy Skład i Rezerwy" class="section-subtitle"/>
+                        </ui:VisualElement>
+                        <ui:TextField name="PlayerSearchInput" placeholder-text="🔍 Szukaj zawodnika..." class="search-input"/>
+                    </ui:VisualElement>
                 </ui:VisualElement>
 
-                <!-- KONTENER 1: KADRA ZESPOŁU -->
-                <ui:VisualElement name="SquadContainer" class="tab-container">
-                    <!-- Nagłówek Tabeli Zawodników -->
-                    <ui:VisualElement class="table-header">
-                        <ui:Label text="POZ" class="col-header col-pos" />
-                        <ui:Label text="ZAWODNIK" class="col-header col-name" />
-                        <ui:Label text="OVERALL" class="col-header col-skill" />
+                <!-- Ciało Przestrzeni Roboczej (Tabela + Boczny Profil Piłkarza) -->
+                <ui:VisualElement class="workspace-body">
+                    <ui:VisualElement class="workspace-table-area">
+                        <!-- KONTENER 1: KADRA ZESPOŁU -->
+                        <ui:VisualElement name="SquadContainer" class="tab-container">
+                            <ui:VisualElement class="table-header">
+                                <ui:Label text="POZ" class="col-header col-pos"/>
+                                <ui:Button name="SortSquadName" text="ZAWODNIK ⬍" class="col-header-btn col-name"/>
+                                <ui:Button name="SortSquadOverall" text="OVERALL ⬍" class="col-header-btn col-skill"/>
+                            </ui:VisualElement>
+                            <ui:ScrollView name="PlayersContainer" class="players-container"/>
+                        </ui:VisualElement>
+
+                        <!-- KONTENER 2: RYNEK TRANSFEROWY (Domyślnie ukryty) -->
+                        <ui:VisualElement name="TransferMarketContainer" class="tab-container hidden">
+                            <ui:VisualElement class="filter-bar">
+                                <ui:Label text="POZYCJA:" class="filter-label"/>
+                                <ui:Button name="FilterAll" text="Wszyscy" class="filter-btn filter-btn--active"/>
+                                <ui:Button name="FilterGK" text="GK" class="filter-btn"/>
+                                <ui:Button name="FilterDEF" text="DEF" class="filter-btn"/>
+                                <ui:Button name="FilterMID" text="MID" class="filter-btn"/>
+                                <ui:Button name="FilterSTR" text="STR" class="filter-btn"/>
+                            </ui:VisualElement>
+                            <ui:VisualElement class="table-header">
+                                <ui:Label text="POZ" class="col-header col-market-pos"/>
+                                <ui:Button name="SortMarketName" text="ZAWODNIK ⬍" class="col-header-btn col-market-name"/>
+                                <ui:Button name="SortMarketClub" text="KLUB ⬍" class="col-header-btn col-market-club"/>
+                                <ui:Button name="SortMarketOverall" text="OVERALL ⬍" class="col-header-btn col-market-skill"/>
+                                <ui:Button name="SortMarketPrice" text="WARTOŚĆ ⬍" class="col-header-btn col-market-price"/>
+                                <ui:Label text="AKCJA" class="col-header col-market-action"/>
+                            </ui:VisualElement>
+                            <ui:ScrollView name="MarketPlayersContainer" class="players-container"/>
+                        </ui:VisualElement>
                     </ui:VisualElement>
 
-                    <!-- Dynamiczny Kontener Przewijany na Wiersze Kadry -->
-                    <ui:ScrollView name="PlayersContainer" class="players-container" />
-                </ui:VisualElement>
+                    <!-- BOCZNY PANEL PROFILU ZAWODNIKA (DRAWER) -->
+                    <ui:VisualElement name="PlayerDetailsDrawer" class="player-details-drawer hidden">
+                        <ui:VisualElement class="drawer-header">
+                            <ui:Label text="PROFIL ZAWODNIKA" class="drawer-title"/>
+                            <ui:Button name="BtnCloseDetails" text="✕" class="drawer-close-btn"/>
+                        </ui:VisualElement>
 
-                <!-- KONTENER 2: RYNEK TRANSFEROWY (Domyślnie ukryty) -->
-                <ui:VisualElement name="TransferMarketContainer" class="tab-container hidden">
-                    <!-- Pasek Filtrów Pozycji -->
-                    <ui:VisualElement name="FilterBar" class="filter-bar">
-                        <ui:Label text="POZYCJA:" class="filter-label" />
-                        <ui:Button name="FilterAll" text="Wszyscy" class="filter-btn filter-btn--active" />
-                        <ui:Button name="FilterGK" text="GK" class="filter-btn" />
-                        <ui:Button name="FilterDEF" text="DEF" class="filter-btn" />
-                        <ui:Button name="FilterMID" text="MID" class="filter-btn" />
-                        <ui:Button name="FilterSTR" text="STR" class="filter-btn" />
+                        <ui:VisualElement class="drawer-profile-card">
+                            <ui:VisualElement class="drawer-player-main">
+                                <ui:Label name="DetailPosBadge" text="MID" class="player-pos-badge detail-pos-badge"/>
+                                <ui:VisualElement class="drawer-name-group">
+                                    <ui:Label name="DetailPlayerName" text="Maciej Kamiński" class="detail-name"/>
+                                    <ui:Label name="DetailClubName" text="ZSŁ Gdańsk" class="detail-club"/>
+                                </ui:VisualElement>
+                                <ui:Label name="DetailOverallBadge" text="90" class="player-skill-badge skill-high detail-overall-badge"/>
+                            </ui:VisualElement>
+
+                            <ui:VisualElement class="drawer-info-grid">
+                                <ui:VisualElement class="drawer-info-item">
+                                    <ui:Label text="WIEK" class="drawer-info-label"/>
+                                    <ui:Label name="DetailAge" text="18 lat" class="drawer-info-val"/>
+                                </ui:VisualElement>
+                                <ui:VisualElement class="drawer-info-item">
+                                    <ui:Label text="PENSJA" class="drawer-info-label"/>
+                                    <ui:Label name="DetailWage" text="2 500 PLN" class="drawer-info-val"/>
+                                </ui:VisualElement>
+                                <ui:VisualElement class="drawer-info-item">
+                                    <ui:Label text="WARTOŚĆ" class="drawer-info-label"/>
+                                    <ui:Label name="DetailValue" text="450 000 PLN" class="drawer-info-val text-accent"/>
+                                </ui:VisualElement>
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+
+                        <ui:VisualElement class="drawer-stats-section">
+                            <ui:Label text="ATRYBUTY PIŁKARSKIE" class="drawer-section-heading"/>
+
+                            <!-- PAC -->
+                            <ui:VisualElement class="stat-progress-row">
+                                <ui:Label text="TEMPO (PAC)" class="stat-progress-name"/>
+                                <ui:VisualElement class="stat-progress-track">
+                                    <ui:VisualElement name="BarPac" class="stat-progress-fill"/>
+                                </ui:VisualElement>
+                                <ui:Label name="ValPac" text="88" class="stat-progress-num"/>
+                            </ui:VisualElement>
+
+                            <!-- SHO -->
+                            <ui:VisualElement class="stat-progress-row">
+                                <ui:Label text="STRZAŁY (SHO)" class="stat-progress-name"/>
+                                <ui:VisualElement class="stat-progress-track">
+                                    <ui:VisualElement name="BarSho" class="stat-progress-fill"/>
+                                </ui:VisualElement>
+                                <ui:Label name="ValSho" text="86" class="stat-progress-num"/>
+                            </ui:VisualElement>
+
+                            <!-- PAS -->
+                            <ui:VisualElement class="stat-progress-row">
+                                <ui:Label text="PODANIA (PAS)" class="stat-progress-name"/>
+                                <ui:VisualElement class="stat-progress-track">
+                                    <ui:VisualElement name="BarPas" class="stat-progress-fill"/>
+                                </ui:VisualElement>
+                                <ui:Label name="ValPas" text="94" class="stat-progress-num"/>
+                            </ui:VisualElement>
+
+                            <!-- DRI -->
+                            <ui:VisualElement class="stat-progress-row">
+                                <ui:Label text="DRYBLING (DRI)" class="stat-progress-name"/>
+                                <ui:VisualElement class="stat-progress-track">
+                                    <ui:VisualElement name="BarDri" class="stat-progress-fill"/>
+                                </ui:VisualElement>
+                                <ui:Label name="ValDri" text="92" class="stat-progress-num"/>
+                            </ui:VisualElement>
+
+                            <!-- DEF -->
+                            <ui:VisualElement class="stat-progress-row">
+                                <ui:Label text="OBRONA (DEF)" class="stat-progress-name"/>
+                                <ui:VisualElement class="stat-progress-track">
+                                    <ui:VisualElement name="BarDef" class="stat-progress-fill"/>
+                                </ui:VisualElement>
+                                <ui:Label name="ValDef" text="82" class="stat-progress-num"/>
+                            </ui:VisualElement>
+
+                            <!-- PHY -->
+                            <ui:VisualElement class="stat-progress-row">
+                                <ui:Label text="FIZYKA (PHY)" class="stat-progress-name"/>
+                                <ui:VisualElement class="stat-progress-track">
+                                    <ui:VisualElement name="BarPhy" class="stat-progress-fill"/>
+                                </ui:VisualElement>
+                                <ui:Label name="ValPhy" text="84" class="stat-progress-num"/>
+                            </ui:VisualElement>
+                        </ui:VisualElement>
                     </ui:VisualElement>
-
-                    <!-- Nagłówek Tabeli Rynku Transferowego -->
-                    <ui:VisualElement class="table-header">
-                        <ui:Label text="POZ" class="col-header col-market-pos" />
-                        <ui:Label text="ZAWODNIK" class="col-header col-market-name" />
-                        <ui:Label text="KLUB" class="col-header col-market-club" />
-                        <ui:Label text="OVERALL" class="col-header col-market-skill" />
-                        <ui:Label text="WARTOŚĆ" class="col-header col-market-price" />
-                        <ui:Label text="AKCJA" class="col-header col-market-action" />
-                    </ui:VisualElement>
-
-                    <!-- Dynamiczny Kontener Przewijany na Piłkarzy z Rynku -->
-                    <ui:ScrollView name="MarketPlayersContainer" class="players-container" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
