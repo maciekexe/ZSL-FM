@@ -1,0 +1,702 @@
+/* ==========================================================================
+   ŁĄCZNOŚĆ FM - SQUAD & TRANSFER MARKET VIEW STYLE (USS)
+   Dynamiczny motyw klubowy (Makieta: ZSŁ Gdańsk - Czerwień #C91F10 + Grafit #3A4548)
+   Ostre kontenery bez zaokrągleń (border-radius: 0px) + pełnoekranowy gradient tła
+   ========================================================================== */
+
+/* Klasa narzędziowa ukrywająca elementy */
+.hidden {
+    display: none;
+}
+
+/* Główny kontener widoku z gradientem całego ekranu z kolorów loga klubu */
+.root-container {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    background-color: #101416;
+    background-image: url("club_bg_gradient.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    color: #e2e8f0;
+    font-size: 14px;
+}
+
+/* ---------------- GÓRNY PASEK (HEADER BAR) ---------------- */
+.header-bar {
+    height: 124px;
+    background-color: rgba(16, 20, 22, 0.55);
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 20px;
+    padding-right: 24px;
+}
+
+.club-header-left {
+    flex-direction: row;
+    align-items: center;
+}
+
+.club-logo-frame {
+    width: 72px;
+    height: 54px;
+    background-color: #f8fafc;
+    border-width: 1px;
+    border-color: #3a4548;
+    padding: 4px;
+    margin-right: 16px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0px;
+}
+
+.club-logo-image {
+    width: 100%;
+    height: 100%;
+    background-image: url("zsl_logo.png");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.club-brand {
+    flex-direction: column;
+    justify-content: center;
+}
+
+.club-title {
+    font-size: 22px;
+    -unity-font-style: bold;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+}
+
+.club-subtitle {
+    font-size: 11px;
+    color: #ef4444;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+}
+
+.header-stats {
+    flex-direction: row;
+    align-items: center;
+}
+
+.stat-card {
+    width: 108px;
+    height: 108px;
+    background-color: rgba(22, 27, 30, 0.82);
+    padding: 8px;
+    border-radius: 16px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.12);
+    margin-left: 14px;
+    justify-content: center;
+    align-items: center;
+}
+
+.stat-label {
+    font-size: 10px;
+    color: #94a3b8;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    margin-bottom: 6px;
+}
+
+.stat-value {
+    font-size: 14px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: #f1f5f9;
+}
+
+.text-accent {
+    color: #ef4444;
+}
+
+/* ---------------- UKŁAD GŁÓWNY (MAIN CONTAINER) ---------------- */
+.main-container {
+    flex-grow: 1;
+    flex-direction: row;
+}
+
+/* ---------------- PANEL BOCZNY (SIDEBAR) ---------------- */
+.sidebar {
+    width: 220px;
+    background-color: rgba(14, 18, 20, 0.72);
+    border-right-width: 1px;
+    border-right-color: rgba(255, 255, 255, 0.08);
+    padding-top: 20px;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.sidebar-heading {
+    font-size: 11px;
+    -unity-font-style: bold;
+    color: #94a3b8;
+    margin-bottom: 12px;
+    margin-left: 8px;
+    letter-spacing: 1px;
+}
+
+.nav-button {
+    height: 42px;
+    margin-bottom: 6px;
+    background-color: transparent;
+    border-width: 0;
+    border-radius: 0px;
+    color: #cbd5e1;
+    font-size: 14px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+    padding-left: 14px;
+    transition-property: background-color, color;
+    transition-duration: 0.15s;
+}
+
+.nav-button:hover {
+    background-color: rgba(255, 255, 255, 0.07);
+    color: #ffffff;
+}
+
+.nav-button--active {
+    background-color: rgba(201, 31, 16, 0.18);
+    color: #fca5a5;
+    border-left-width: 4px;
+    border-left-color: #c91f10;
+}
+
+/* ---------------- GŁÓWNY OBSZAR ROBOCZY (CONTENT AREA) ---------------- */
+.content-area {
+    flex-grow: 1;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 28px;
+    padding-right: 28px;
+    background-color: transparent;
+}
+
+.content-header {
+    margin-bottom: 16px;
+}
+
+.content-header-top {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.section-title {
+    font-size: 24px;
+    -unity-font-style: bold;
+    color: #ffffff;
+}
+
+.section-subtitle {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 3px;
+}
+
+/* ---------------- WYSZUKIWARKA Z WINDOWSOWĄ LUPĄ ---------------- */
+.search-box {
+    flex-direction: row;
+    align-items: center;
+    width: 280px;
+    height: 36px;
+    border-radius: 0px;
+    background-color: rgba(18, 22, 25, 0.85);
+    border-width: 1px;
+    border-color: #3a4548;
+    padding-left: 10px;
+    padding-right: 10px;
+    transition-property: border-color, background-color;
+    transition-duration: 0.15s;
+}
+
+.search-box:hover {
+    border-color: #64748b;
+}
+
+.search-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    flex-shrink: 0;
+    background-image: url("icon_search.png");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.search-input {
+    flex-grow: 1;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    border-width: 0;
+    border-radius: 0px;
+    color: #f8fafc;
+    font-size: 13px;
+}
+
+.search-input > #unity-text-input {
+    background-color: transparent;
+    border-width: 0;
+    border-radius: 0px;
+    color: #f8fafc;
+    padding: 0;
+    margin: 0;
+    --unity-cursor-color: #f8fafc;
+}
+
+/* ---------------- OBSZAR ROBOCZY (TABELA + BOCZNY PROFIL) ---------------- */
+.workspace-body {
+    flex-grow: 1;
+    flex-direction: row;
+}
+
+.workspace-table-area {
+    flex-grow: 1;
+    min-width: 500px;
+}
+
+.tab-container {
+    flex-grow: 1;
+}
+
+/* ---------------- PASEK FILTRÓW (FILTER BAR) ---------------- */
+.filter-bar {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.filter-label {
+    font-size: 11px;
+    -unity-font-style: bold;
+    color: #94a3b8;
+    margin-right: 12px;
+    letter-spacing: 0.5px;
+}
+
+.filter-btn {
+    height: 30px;
+    padding-left: 14px;
+    padding-right: 14px;
+    margin-right: 6px;
+    background-color: rgba(22, 27, 30, 0.82);
+    border-width: 1px;
+    border-color: #3a4548;
+    border-radius: 0px;
+    color: #cbd5e1;
+    font-size: 12px;
+    -unity-font-style: bold;
+    transition-property: background-color, border-color, color;
+    transition-duration: 0.15s;
+}
+
+.filter-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-color: #64748b;
+}
+
+.filter-btn--active {
+    background-color: rgba(201, 31, 16, 0.25);
+    border-color: #c91f10;
+    color: #fca5a5;
+}
+
+/* ---------------- NAGŁÓWKI TABELI I SORTOWANIE ---------------- */
+.table-header {
+    flex-direction: row;
+    align-items: center;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: rgba(16, 20, 22, 0.88);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.08);
+    border-radius: 0px;
+    margin-bottom: 6px;
+}
+
+.col-header {
+    font-size: 11px;
+    -unity-font-style: bold;
+    color: #94a3b8;
+    letter-spacing: 0.5px;
+}
+
+.col-header-btn {
+    background-color: transparent;
+    border-width: 0;
+    border-radius: 0px;
+    color: #94a3b8;
+    font-size: 11px;
+    -unity-font-style: bold;
+    letter-spacing: 0.5px;
+    padding: 0;
+    margin: 0;
+    -unity-text-align: middle-left;
+    transition-property: color;
+    transition-duration: 0.15s;
+}
+
+.col-header-btn:hover {
+    color: #fca5a5;
+}
+
+.col-header-btn--active {
+    color: #ef4444;
+}
+
+/* Kolumny tabeli Kadry */
+.col-pos {
+    width: 60px;
+}
+
+.col-name {
+    flex-grow: 1;
+}
+
+.col-skill {
+    width: 100px;
+    -unity-text-align: middle-center;
+}
+
+/* Kolumny tabeli Rynku Transferowego */
+.col-market-pos {
+    width: 50px;
+}
+
+.col-market-name {
+    flex-grow: 1;
+}
+
+.col-market-club {
+    width: 140px;
+    -unity-text-align: middle-left;
+}
+
+.col-market-skill {
+    width: 90px;
+    -unity-text-align: middle-center;
+}
+
+.col-market-price {
+    width: 130px;
+    -unity-text-align: middle-right;
+}
+
+.col-market-action {
+    width: 120px;
+    -unity-text-align: middle-center;
+}
+
+/* ---------------- KONTENER LISTY ZAWODNIKÓW (SCROLLVIEW) ---------------- */
+.players-container {
+    flex-grow: 1;
+}
+
+/* ---------------- WIERSZ / KARTA ZAWODNIKA (KADRA) ---------------- */
+.player-row {
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(20, 24, 27, 0.8);
+    border-radius: 0px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.06);
+    margin-bottom: 4px;
+    padding-left: 16px;
+    padding-right: 16px;
+    height: 48px;
+    transition-property: background-color, border-color;
+    transition-duration: 0.15s;
+}
+
+.player-row:hover {
+    background-color: rgba(34, 41, 45, 0.9);
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+.player-row--selected {
+    background-color: rgba(201, 31, 16, 0.14);
+    border-color: #c91f10;
+    border-left-width: 4px;
+    border-left-color: #c91f10;
+}
+
+.player-pos-badge {
+    width: 44px;
+    height: 26px;
+    border-radius: 0px;
+    background-color: #283135;
+    border-width: 1px;
+    border-color: #3a4548;
+    -unity-text-align: middle-center;
+    font-size: 11px;
+    -unity-font-style: bold;
+    color: #e2e8f0;
+}
+
+.player-name-label {
+    flex-grow: 1;
+    font-size: 14px;
+    -unity-font-style: bold;
+    color: #f8fafc;
+    margin-left: 16px;
+}
+
+.player-skill-badge {
+    width: 42px;
+    height: 28px;
+    border-radius: 0px;
+    -unity-text-align: middle-center;
+    font-size: 13px;
+    -unity-font-style: bold;
+    color: #ffffff;
+}
+
+/* Kolorowanie wskaźnika OverallSkill */
+.skill-high {
+    background-color: #059669;
+    color: #ffffff;
+}
+
+.skill-mid {
+    background-color: #d97706;
+    color: #ffffff;
+}
+
+.skill-low {
+    background-color: #475569;
+    color: #e2e8f0;
+}
+
+/* ---------------- WIERSZ RYNKU TRANSFEROWEGO ---------------- */
+.market-row {
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(20, 24, 27, 0.8);
+    border-radius: 0px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.06);
+    margin-bottom: 4px;
+    padding-left: 16px;
+    padding-right: 16px;
+    height: 52px;
+    transition-property: background-color, border-color;
+    transition-duration: 0.15s;
+}
+
+.market-row:hover {
+    background-color: rgba(34, 41, 45, 0.9);
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+.club-pill {
+    width: 140px;
+    font-size: 12px;
+    color: #cbd5e1;
+    -unity-font-style: bold;
+}
+
+.price-tag {
+    width: 130px;
+    font-size: 13px;
+    -unity-font-style: bold;
+    color: #fbbf24;
+    -unity-text-align: middle-right;
+    margin-right: 12px;
+}
+
+.btn-bid {
+    width: 110px;
+    height: 32px;
+    background-color: #c91f10;
+    color: #ffffff;
+    border-width: 0;
+    border-radius: 0px;
+    font-size: 12px;
+    -unity-font-style: bold;
+    transition-property: background-color;
+    transition-duration: 0.15s;
+}
+
+.btn-bid:hover {
+    background-color: #e02e1e;
+}
+
+.btn-bid:active {
+    background-color: #9e180d;
+}
+
+/* ---------------- BOCZNY PANEL PROFILU ZAWODNIKA (DRAWER) ---------------- */
+.player-details-drawer {
+    width: 320px;
+    margin-left: 20px;
+    background-color: rgba(16, 20, 22, 0.88);
+    border-width: 1px;
+    border-color: #3a4548;
+    border-radius: 0px;
+    padding: 18px;
+    flex-shrink: 0;
+}
+
+.drawer-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom-width: 1px;
+    border-bottom-color: #2c3538;
+}
+
+.drawer-title {
+    font-size: 12px;
+    -unity-font-style: bold;
+    color: #ef4444;
+    letter-spacing: 1px;
+}
+
+.drawer-close-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 0px;
+    background-color: #252c2f;
+    color: #cbd5e1;
+    border-width: 1px;
+    border-color: #3a4548;
+    -unity-text-align: middle-center;
+    font-size: 12px;
+    -unity-font-style: bold;
+    padding: 0;
+    transition-property: background-color, color;
+    transition-duration: 0.15s;
+}
+
+.drawer-close-btn:hover {
+    background-color: #c91f10;
+    color: #ffffff;
+    border-color: #c91f10;
+}
+
+.drawer-profile-card {
+    background-color: rgba(24, 30, 33, 0.9);
+    border-radius: 0px;
+    padding: 14px;
+    margin-bottom: 16px;
+    border-width: 1px;
+    border-color: #3a4548;
+}
+
+.drawer-player-main {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.detail-pos-badge {
+    margin-right: 12px;
+}
+
+.drawer-name-group {
+    flex-grow: 1;
+}
+
+.detail-name {
+    font-size: 16px;
+    -unity-font-style: bold;
+    color: #ffffff;
+}
+
+.detail-club {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 2px;
+}
+
+.detail-overall-badge {
+    width: 44px;
+    height: 32px;
+    font-size: 15px;
+}
+
+.drawer-info-grid {
+    flex-direction: row;
+    justify-content: space-between;
+    border-top-width: 1px;
+    border-top-color: #2c3538;
+    padding-top: 10px;
+}
+
+.drawer-info-item {
+    flex-direction: column;
+    align-items: center;
+}
+
+.drawer-info-label {
+    font-size: 9px;
+    color: #94a3b8;
+    -unity-font-style: bold;
+    letter-spacing: 0.5px;
+}
+
+.drawer-info-val {
+    font-size: 12px;
+    color: #f1f5f9;
+    -unity-font-style: bold;
+    margin-top: 3px;
+}
+
+.drawer-stats-section {
+    flex-grow: 1;
+}
+
+.drawer-section-heading {
+    font-size: 11px;
+    -unity-font-style: bold;
+    color: #94a3b8;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+}
+
+.stat-progress-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.stat-progress-name {
+    width: 95px;
+    font-size: 11px;
+    -unity-font-style: bold;
+    color: #cbd5e1;
+}
+
+.stat-progress-track {
+    flex-grow: 1;
+    height: 8px;
+    background-color: #252c2f;
+    border-radius: 0px;
+    overflow: hidden;
+    margin-right: 10px;
+}
+
+.stat-progress-fill {
+    height: 100%;
+    border-radius: 0px;
+    background-color: #c91f10;
+}
+
+.stat-progress-num {
+    width: 24px;
+    font-size: 12px;
+    -unity-font-style: bold;
+    color: #ffffff;
+    -unity-text-align: middle-right;
+}
